@@ -1,5 +1,9 @@
 archive
-data
+data/analysis_data
+data/bayes_data
+data/brms_data
+data/brms_model_comparison_data
+data/modeling_data
 graphics
 # History files
 .Rhistory
