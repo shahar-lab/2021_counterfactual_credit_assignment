@@ -1,9 +1,5 @@
 rm(list = ls())
-library(tidylog)
-library(effects)
 library(tidyverse)
-library(ggplot2)
-library(dplyr)
 
 load('data/analysis_data/tab_unch.Rdata')
 load('data/analysis_data/tab_unch_two.Rdata')
