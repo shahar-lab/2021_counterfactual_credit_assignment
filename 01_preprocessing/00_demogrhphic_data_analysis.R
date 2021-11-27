@@ -1,10 +1,10 @@
 rm(list = ls())
 library(data.table)
 
-load('myfolder/03_data/01_raw_data/03_raw_clean_data/tab.Rdata')
+load('data/analysis_data/tab.Rdata')
 subject_ids<- unique(tab$prolific_id) 
 
-data<-data.table(read.csv('myfolder/03_data/01_raw_data/02_raw_data_csv/demographic_data_from_prolific.csv'))
+data<-data.table(read.csv('data/raw_data/02_raw_data_csv/demographic_data_from_prolific.csv'))
 data<- data[data$participant_id %in% subject_ids,c('participant_id', 'age','Sex', 'First.Language')]
 colnames(data)[1]<-'prolific_id'
 

@@ -1,5 +1,5 @@
 con_sr_json<-function(sr_name,datafile,curnfolder,files,subnum) {
-  browser()
+  #browser()
   #this function aggregates self reports from json to data frame
   prolific_id<-as.data.frame(fromJSON(file = paste(curnfolder,'/',files[grepl('starter',files)],sep="")))
   colnames(prolific_id)<-c('prolific_id')

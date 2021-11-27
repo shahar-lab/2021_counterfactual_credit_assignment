@@ -1,6 +1,6 @@
 #-------------------------------------------------------
-load('./data/null_100subjects_4blocks_50trials_4arms_parameters.Rdata')
-load('./data/null_100subjects_4blocks_50trials_4arms_extracted_parameters.rdata')
+load('./data/modeling_data/null_100subjects_4blocks_50trials_4arms_parameters.Rdata')
+load('./data//modeling_data/null_100subjects_4blocks_50trials_4arms_extracted_parameters.rdata')
 
 library(ggplot2)
 library(ggpubr)

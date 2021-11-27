@@ -13,8 +13,8 @@ library(bayestestR)
 library(bayesplot)
 library(parallel)
 
-load('data/tab.Rdata')
-tab_ch= tab%>%filter(!reoffer_unch,reoffer_ch)
+load('data/analysis_data/tab.Rdata')
+load('data/analysis_data/tab_ch.Rdata')
 
 num_cores=detectCores()
 
@@ -153,7 +153,7 @@ bayes_null_ch_medium <-
     prior = prior_null_medium
   )
 
-save(bayes_null_ch_medium, file = '06_brms/model_null_ch_medium.Rdata')
+save(bayes_null_ch_medium, file = 'data/brms_data/model_null_ch_medium.Rdata')
 # main_effect models ------------------------------------------------------
 
 #strong prior
@@ -218,10 +218,10 @@ bayes_rw_ch_uniform <-
 
 #save models_main_effect
 
-save(bayes_rw_ch_weak, file = '06_brms/model_rw_ch_weak.Rdata')
-save(bayes_rw_ch_medium, file = '06_brms/model_rw_ch_medium.Rdata')
-save(bayes_rw_ch_strong, file = '06_brms/model_rw_ch_strong.Rdata')
-save(bayes_rw_ch_uniform, file = '06_brms/model_rw_ch_uniform.Rdata')
+save(bayes_rw_ch_weak, file = 'data/brms_data/model_rw_ch_weak.Rdata')
+save(bayes_rw_ch_medium, file = 'data/brms_data/model_rw_ch_medium.Rdata')
+save(bayes_rw_ch_strong, file = 'data/brms_data/model_rw_ch_strong.Rdata')
+save(bayes_rw_ch_uniform, file = 'data/brms_data/model_rw_ch_uniform.Rdata')
 
 # interaction_models ------------------------------------------------------
 
@@ -287,10 +287,10 @@ bayes_rw_ch_cond_uniform <-
 
 #save models_cond
 
-save(bayes_rw_ch_cond_weak, file = '06_brms/model_rw_ch_cond_weak.Rdata')
-save(bayes_rw_ch_cond_medium, file = '06_brms/model_rw_ch_cond_medium.Rdata')
-save(bayes_rw_ch_cond_strong, file = '06_brms/model_rw_ch_cond_strong.Rdata')
-save(bayes_rw_ch_cond_uniform, file = '06_brms/model_rw_ch_cond_uniform.Rdata')
+save(bayes_rw_ch_cond_weak, file = 'data/brms_data/model_rw_ch_cond_weak.Rdata')
+save(bayes_rw_ch_cond_medium, file = 'data/brms_data/model_rw_ch_cond_medium.Rdata')
+save(bayes_rw_ch_cond_strong, file = 'data/brms_data/model_rw_ch_cond_strong.Rdata')
+save(bayes_rw_ch_cond_uniform, file = 'data/brms_data/model_rw_ch_cond_uniform.Rdata')
 
 
 #models for prior predictive check sampling only from prior --------------
@@ -309,7 +309,7 @@ bayes_rw_ch_medium_prior_sampling <-
     prior=prior_rw_medium,
     sample_prior = "only"
   )
-save(bayes_rw_ch_medium_prior_sampling, file = '06_brms/bayes_rw_ch_medium_prior_sampling.Rdata')
+save(bayes_rw_ch_medium_prior_sampling, file = 'data/brms_data/bayes_rw_ch_medium_prior_sampling.Rdata')
 
 bayes_rw_cond_ch_medium_prior_sampling <-
   brm(
@@ -325,4 +325,4 @@ bayes_rw_cond_ch_medium_prior_sampling <-
     prior=prior_rw_cond_medium,
     sample_prior = "only"
   )
-save(bayes_rw_cond_ch_medium_prior_sampling, file = '06_brms/bayes_rw_cond_ch_medium_prior_sampling.Rdata')
+save(bayes_rw_cond_ch_medium_prior_sampling, file = 'data/brms_data/bayes_rw_cond_ch_medium_prior_sampling.Rdata')

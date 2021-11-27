@@ -6,11 +6,11 @@ rm(list=ls())
 
 # bridgesampler  --------------------------------------------
 library(bridgesampling) 
-load('./data/tab_fitted_with_1PE_bridge_sampler.rdata')
+load('./data/modeling_data/tab_fitted_with_1PE_bridge_sampler.rdata')
 onePE=bs
-load('./data/tab_fitted_with_2PEs_bridge_sampler.rdata')
+load('./data/modeling_data/tab_fitted_with_2PEs_bridge_sampler.rdata')
 twoPEs=bs
-load('./data/tab_fitted_with_null_bridge_sampler.rdata')
+load('./data/modeling_data/tab_fitted_with_null_bridge_sampler.rdata')
 null=bs
 
 
@@ -22,7 +22,7 @@ rm(list=ls())
 
 --------------------------------------------------------------
 #examine posterior
-load('./data/tab_fitted_with_2PEs_extracted_parameters.rdata')
+load('./data/modeling_data/tab_fitted_with_2PEs_extracted_parameters.rdata')
 
 library(bayestestR)
 library(ggplot2)
@@ -58,11 +58,11 @@ ggarrange(p1,p2,p3)
 #compare individual level parameters
 p4=ggplot(data.frame(x =apply(pars$alpha_ch, 2, mean), y =apply(pars$alpha_unch, 2, mean)),aes(x=x,y=y))+geom_point(col='purple',alpha=0.7)+
   ggtitle('',subtitle = paste('r=',round(cor(apply(pars$alpha_ch, 2, mean), apply(pars$alpha_unch, 2, mean)),3)))+
-  xlab(expression(paste('simulated ',alpha['chosen'])))+ylab(expression(paste('recovered ',alpha['chosen'])))+ xlim(0,1)+ylim(0,1)+
+  xlab(expression(paste('recovered ',alpha['chosen'])))+ylab(expression(paste('recovered ',alpha['unchosen'])))+ xlim(0,1)+ylim(0,1)+
   theme_classic()
 
 p4
 x=hdi(pars$mu_alpha_ch, ci = 0.95)$CI_low
-x$CI_low
 hdi(pars$mu_alpha_unch, ci = 0.95)
 hdi(pars$mu_beta, ci = 0.95)
+

@@ -5,7 +5,7 @@
 
 #empirical data-------------------------------------------------
 rm(list=ls())
-load('./data/tab.Rdata')
+load('./data/analysis_data/tab.Rdata')
 colnames(tab)
 library(dplyr)
 
@@ -35,7 +35,7 @@ data_for_stan<-make_mystandata(data=tab,
                                  'selected_offer'),
                                additional_arguments=list(Narms=4, Nraffle=2))
 
-save(data_for_stan,file='data/tab_standata.rdata')
+save(data_for_stan,file='data/modeling_data/tab_standata.rdata')
 
 
 

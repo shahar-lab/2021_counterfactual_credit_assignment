@@ -79,30 +79,69 @@ tab<-tab[rt>200 & rt<4000]
 #remove first trial of every block
 tab<-tab[trl>1]
 
-save(tab, file='myfolder/03_data/01_raw_data/03_raw_clean_data/tab.Rdata')
-
-
+save(tab, file='data/analysis_data/tab.Rdata')
+tab_ch = tab%>%filter(!reoffer_unch,reoffer_ch)
+tab_unch= tab%>%filter(!reoffer_ch,reoffer_unch)
+save(tab_ch, file='data/analysis_data/tab_ch.Rdata')
+save(tab_unch, file='data/analysis_data/tab_unch.Rdata')
 #####
-#We ommited participants due to no response probability higher then 5 (four participants ommited), 
-#participants that stayed with the same key more them 90% of the trials (no participants were ommited),
-#participants with more then 10% very long reaction-times (no participants were ommited), or 10% of very short 
-#reaction-times (21 participants ommited). 
-#We then took out trials with implausible fast or slow reaction-times (<200ms or >4000ms), which resulted in ommision of 1.79% of the remaining trials.
+#We omitted participants due to no response probability higher then 5 (four participants omitted), 
+#participants that stayed with the same key more them 90% of the trials (no participants were omitted),
+#participants with more then 10% very long reaction-times (no participants were omitted), or 10% of very short 
+#reaction-times (21 participants omitted). 
+#We then took out trials with implausible fast or slow reaction-times (<200ms or >4000ms), which resulted in omission of 1.79% of the remaining trials.
 #Finally we took out the first trial in each block.
 
 
 
+# tab_twoback -------------------------------------------------------------
+
+tab_two=tab #we create a copy to avoid problems with additional NAs due to two_back considerations.
+
+tab_two$stay_frc_unch_two     <-
+  tab_two$ch == shift(tab_two$unch,
+                  n = 2,
+                  type = 'lag',
+                  fill = 0) * 1
+tab_two$rw_twoback            <- shift(tab_two$rw,
+                                   n = 2,
+                                   type = 'lag',
+                                   fill = 0)
+tab_two$reoffer_ch_two        <-
+  (
+    tab_two$frcA == shift(
+      tab_two$ch,
+      n = 2,
+      type = 'lag',
+      fill = 0
+    ) | tab_two$frcB == shift(
+      tab_two$ch,
+      n = 2,
+      type = 'lag',
+      fill = 0
+    )
+  )
+tab_two$reoffer_unch_two      <-
+  (
+    tab_two$frcA == shift(
+      tab_two$unch,
+      n = 2,
+      type = 'lag',
+      fill = 0
+    ) | tab_two$frcB == shift(
+      tab_two$unch,
+      n = 2,
+      type = 'lag',
+      fill = 0
+    )
+  )
+tab_unch_two=tab_two%>%filter(trl-2==lag(trl,2),!reoffer_ch_two,reoffer_unch_two)
+
+save(tab_unch_two, file='data/analysis_data/tab_unch_two.Rdata')
 
 
+# replication -------------------------------------------------------------
+load('data/replications/yaelT_fixed.Rdata') #fixed reward direction of win/lose
+cars_unch=task%>%filter(reoffered_chosen==0,reoffered_unchosen==1)
 
-
-
-
-#exported_data<- data.table(read.csv('myfolder/00_raw_exported_data/all_exported_new.csv'))
-#ids<- tab$prolific_id[!duplicated(tab$prolific_id)]
-#exported_data<-setDT(exported_data)[participant_id %in% ids,]
-#write.csv(exported_data, 'myfolder/00_raw_exported_data/01_filtered_exported_data.csv')
-
-#tab$counter    <-(tab$cond[tab$blk%%2==1]=='pos' | tab$cond[tab$blk%%2==0]=='neg')*1+1
-
-
+save(cars_unch, file='data/analysis_data/cars_unch.Rdata')

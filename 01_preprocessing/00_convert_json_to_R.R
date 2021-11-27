@@ -24,11 +24,9 @@ for (i in 1:length(subfolder)){
 }  
 
 
-
-
 #save csv
-write.csv(tab,'myfolder/03_data/01_raw_data/02_raw_data_csv/tab.csv', row.names=FALSE)
-write.csv(bdi,'myfolder/03_data/01_raw_data/02_raw_data_csv/bdi.csv', row.names=FALSE)
-write.csv(oci,'myfolder/03_data/01_raw_data/02_raw_data_csv/oci.csv', row.names=FALSE)
-write.csv(stai,'myfolder/03_data/01_raw_data/02_raw_data_csv/stai.csv', row.names=FALSE)
-write.csv(spq,'myfolder/03_data/01_raw_data/02_raw_data_csv/spq.csv', row.names=FALSE)
+write.csv(tab,'data/raw_data/02_raw_data_csv/tab.csv', row.names=FALSE)
+write.csv(bdi,'data/raw_data/02_raw_data_csv/bdi.csv', row.names=FALSE)
+write.csv(oci,'data/raw_data/02_raw_data_csv/oci.csv', row.names=FALSE)
+write.csv(stai,'data/raw_data/02_raw_data_csv/stai.csv', row.names=FALSE)
+write.csv(spq,'data/raw_data/02_raw_data_csv/spq.csv', row.names=FALSE)

@@ -10,7 +10,7 @@ Nblocks             =4
 Ntrials_perblock    =50
 Ntrials             =Nblocks*Ntrials_perblock
 Narms               =4
-rndwlk              =read.csv('./data/rndwlk_4frc_1000trials.csv',header=F)[,1:Ntrials_perblock]
+rndwlk              =read.csv('./data/modeling_data/rndwlk_4frc_1000trials.csv',header=F)[,1:Ntrials_perblock]
 Nraffle             =2
 
 
@@ -79,8 +79,8 @@ for (subject in 1:Nsubjects) {
 
 
 #save-------------------------------------------------------------------
-save(df,file=paste('./data/',model_name,'_',Nsubjects,'subjects_',Nblocks,'blocks_',Ntrials_perblock,'trials_',Narms,'arms_simdata.Rdata',sep=""))
-save(true.parameters,file=paste('./data/',model_name,'_',Nsubjects,'subjects_',Nblocks,'blocks_',Ntrials_perblock,'trials_',Narms,'arms_parameters.Rdata',sep=""))
+save(df,file=paste('./data/modeling_data/',model_name,'_',Nsubjects,'subjects_',Nblocks,'blocks_',Ntrials_perblock,'trials_',Narms,'arms_simdata.Rdata',sep=""))
+save(true.parameters,file=paste('./data/modeling_data/',model_name,'_',Nsubjects,'subjects_',Nblocks,'blocks_',Ntrials_perblock,'trials_',Narms,'arms_parameters.Rdata',sep=""))
 
 #convert to standata format-------------------------------------------------
 
@@ -126,7 +126,7 @@ data_for_stan<-make_mystandata(data=df,
                                  'selected_offer'),
                                additional_arguments=list(Narms=4, Nraffle=2))
 
-save(data_for_stan,file=paste('./data/',model_name,'_',Nsubjects,'subjects_',Nblocks,'blocks_',Ntrials_perblock,'trials_',Narms,'arms_standata.Rdata',sep=""))
+save(data_for_stan,file=paste('./data/modeling_data/',model_name,'_',Nsubjects,'subjects_',Nblocks,'blocks_',Ntrials_perblock,'trials_',Narms,'arms_standata.Rdata',sep=""))
 
 
 

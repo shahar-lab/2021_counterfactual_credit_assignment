@@ -6,7 +6,7 @@ rm(list=ls())
 
 # fit stan model  --------------------------------------------
 library(rstan) 
-load('./data/tab_standata.Rdata')
+load('./data/modeling_data/tab_standata.Rdata')
 library(parallel)
 detectCores()
 {
@@ -24,20 +24,20 @@ detectCores()
 }
 
 #save
-saveRDS(rl_fit, './data/tab_fitted_with_null_RDSfile.rds')
+saveRDS(rl_fit, './data/modeling_data/tab_fitted_with_null_RDSfile.rds')
 
 pars <- rstan::extract(rl_fit, permuted = TRUE)
-save(pars, file='./data/tab_fitted_with_null_extracted_parameters.rdata')
+save(pars, file='./data/modeling_data/tab_fitted_with_null_extracted_parameters.rdata')
 
 library(bridgesampling)
 bs = bridge_sampler(rl_fit)
-save(bs, file=paste('data/tab_fitted_with_null_bridge_sampler.rdata',sep=""))
+save(bs, file=paste('data/modeling_data/tab_fitted_with_null_bridge_sampler.rdata',sep=""))
 
 -----------------------------------------------------------------------------------------
 #2PEs
 rm(list=ls())
 library(rstan) 
-load('./data/tab_standata.Rdata')
+load('./data/modeling_data/tab_standata.Rdata')
 library(parallel)
 detectCores()
 {
@@ -55,21 +55,21 @@ detectCores()
 }
 
 #save
-saveRDS(rl_fit, './data/tab_fitted_with_2PEs_RDSfile.rds')
+saveRDS(rl_fit, './data/modeling_data/tab_fitted_with_2PEs_RDSfile.rds')
 
 pars <- rstan::extract(rl_fit, permuted = TRUE)
-save(pars, file='./data/tab_fitted_with_2PEs_extracted_parameters.rdata')
+save(pars, file='./data/modeling_data/tab_fitted_with_2PEs_extracted_parameters.rdata')
 
 library(bridgesampling)
 bs = bridge_sampler(rl_fit)
-save(bs, file=paste('data/tab_fitted_with_2PEs_bridge_sampler.rdata',sep=""))
+save(bs, file=paste('data/modeling_data/tab_fitted_with_2PEs_bridge_sampler.rdata',sep=""))
 
 
 -----------------------------------------------------------------------------------------
 #1PE
 rm(list=ls())
 library(rstan) 
-load('./data/tab_standata.Rdata')
+load('./data/modeling_data/tab_standata.Rdata')
 library(parallel)
 detectCores()
 {
@@ -87,12 +87,12 @@ detectCores()
 }
 
 #save
-saveRDS(rl_fit, './data/tab_fitted_with_1PE_RDSfile.rds')
+saveRDS(rl_fit, './data/modeling_data/tab_fitted_with_1PE_RDSfile.rds')
 
 pars <- rstan::extract(rl_fit, permuted = TRUE)
-save(pars, file='./data/tab_fitted_with_1PE_extracted_parameters.rdata')
+save(pars, file='./data/modeling_data/tab_fitted_with_1PE_extracted_parameters.rdata')
 
 library(bridgesampling)
 bs = bridge_sampler(rl_fit)
-save(bs, file=paste('data/tab_fitted_with_1PE_bridge_sampler.rdata',sep=""))
+save(bs, file=paste('data/modeling_data/tab_fitted_with_1PE_bridge_sampler.rdata',sep=""))
 

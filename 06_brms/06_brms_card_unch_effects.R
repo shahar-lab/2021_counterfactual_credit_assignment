@@ -14,8 +14,10 @@ library(bayesplot)
 library(parallel)
 library(data.table)
 
-load('data/tab.Rdata')
-tab_unch= tab%>%filter(!reoffer_ch,reoffer_unch)
+
+load('data/analysis_data/tab_unch.Rdata')
+load('data/analysis_data/tab_unch_two.Rdata')
+load('data/analysis_data/cars_unch.Rdata')
 
 num_cores=detectCores()
 
@@ -176,18 +178,6 @@ prior_rw_cars_medium = c(
   )
 )
 
-# bayes_model_dual_task ---------------------------------------------------
-prior_medium_dual_unch=c(set_prior(
-  prior = "normal(0,0.2)",
-  class = "b",
-  coef = "Intercept"
-),
-set_prior(
-  prior = "normal(0,0.2)", 
-  class = "b",
-  coef = "rw_when_unch_last_appeared"
-))
-
 # models_bridgesampling ---------------------------------------------------
 
 bayes_null_unch_medium <-
@@ -205,7 +195,7 @@ bayes_null_unch_medium <-
     save_pars = save_pars(all = TRUE)
   )
 
-save(bayes_null_unch_medium, file = '06_brms/model_null_unch_medium.Rdata')
+save(bayes_null_unch_medium, file = 'data/brms_data/model_null_unch_medium.Rdata')
 #medium prior
 bayes_rw_unch_medium <-
   brm(
@@ -221,7 +211,7 @@ bayes_rw_unch_medium <-
     prior = prior_rw_medium,
     save_pars = save_pars(all = TRUE)
   )
-save(bayes_rw_unch_medium, file = '06_brms/model_rw_unch_medium.Rdata')
+save(bayes_rw_unch_medium, file = 'data/brms_data/model_rw_unch_medium.Rdata')
 
 
 #medium prior
@@ -240,7 +230,7 @@ bayes_rw_unch_cond_medium <-
     save_pars = save_pars(all = TRUE)
   )
 
-save(bayes_rw_unch_cond_medium, file = '06_brms/model_rw_unch_cond_medium.Rdata')
+save(bayes_rw_unch_cond_medium, file = 'data/brms_data/model_rw_unch_cond_medium.Rdata')
 # null_models -------------------------------------------------------------
 
 # main_effect models ------------------------------------------------------
@@ -293,9 +283,9 @@ bayes_rw_unch_uniform <-
 
 #save models_main_effect
 
-save(bayes_rw_unch_weak, file = '06_brms/model_rw_unch_weak.Rdata')
-save(bayes_rw_unch_strong, file = '06_brms/model_rw_unch_strong.Rdata')
-save(bayes_rw_unch_uniform, file = '06_brms/model_rw_unch_uniform.Rdata')
+save(bayes_rw_unch_weak, file = 'data/brms_data/model_rw_unch_weak.Rdata')
+save(bayes_rw_unch_strong, file = 'data/brms_data/model_rw_unch_strong.Rdata')
+save(bayes_rw_unch_uniform, file = 'data/brms_data/model_rw_unch_uniform.Rdata')
 
 # interaction_models ------------------------------------------------------
 
@@ -346,9 +336,9 @@ bayes_rw_unch_cond_uniform <-
 
 #save models_cond
 
-save(bayes_rw_unch_cond_weak, file = '06_brms/model_rw_unch_cond_weak.Rdata')
-save(bayes_rw_unch_cond_strong, file = '06_brms/model_rw_unch_cond_strong.Rdata')
-save(bayes_rw_unch_cond_uniform, file = '06_brms/model_rw_unch_cond_uniform.Rdata')
+save(bayes_rw_unch_cond_weak, file = 'data/brms_data/model_rw_unch_cond_weak.Rdata')
+save(bayes_rw_unch_cond_strong, file = 'data/brms_data/model_rw_unch_cond_strong.Rdata')
+save(bayes_rw_unch_cond_uniform, file = 'data/brms_data/model_rw_unch_cond_uniform.Rdata')
 
 
 #models for prior predictive check sampling only from prior --------------
@@ -367,7 +357,7 @@ bayes_rw_unch_medium_prior_sampling <-
     prior=prior_rw_medium,
     sample_prior = "only"
   )
-save(bayes_rw_unch_medium_prior_sampling, file = '06_brms/bayes_rw_unch_medium_prior_sampling.Rdata')
+save(bayes_rw_unch_medium_prior_sampling, file = 'data/brms_data/bayes_rw_unch_medium_prior_sampling.Rdata')
 
 bayes_rw_cond_unch_medium_prior_sampling <-
   brm(
@@ -383,49 +373,9 @@ bayes_rw_cond_unch_medium_prior_sampling <-
     prior=prior_rw_cond_medium,
     sample_prior = "only"
   )
-save(bayes_rw_cond_unch_medium_prior_sampling, file = '06_brms/bayes_rw_cond_unch_medium_prior_sampling.Rdata')
+save(bayes_rw_cond_unch_medium_prior_sampling, file = 'data/brms_data/bayes_rw_cond_unch_medium_prior_sampling.Rdata')
 
 # rw_twoback --------------------------------------------------------------
-
-tab$stay_frc_unch_two     <-
-  tab$ch == shift(tab$unch,
-                  n = 2,
-                  type = 'lag',
-                  fill = 0) * 1
-tab$rw_twoback            <- shift(tab$rw,
-                                   n = 2,
-                                   type = 'lag',
-                                   fill = 0)
-tab$reoffer_ch_two        <-
-  (
-    tab$frcA == shift(
-      tab$ch,
-      n = 2,
-      type = 'lag',
-      fill = 0
-    ) | tab$frcB == shift(
-      tab$ch,
-      n = 2,
-      type = 'lag',
-      fill = 0
-    )
-  )
-tab$reoffer_unch_two      <-
-  (
-    tab$frcA == shift(
-      tab$unch,
-      n = 2,
-      type = 'lag',
-      fill = 0
-    ) | tab$frcB == shift(
-      tab$unch,
-      n = 2,
-      type = 'lag',
-      fill = 0
-    )
-  )
-
-tab_unch_two=tab%>%filter(trl-2==lag(trl,2),!reoffer_ch_two,reoffer_unch_two)
 
 #medium prior
 bayes_rw_twoback_unch_cond_medium <-
@@ -443,17 +393,16 @@ bayes_rw_twoback_unch_cond_medium <-
     save_pars = save_pars(all = TRUE)
   )
 
-save(bayes_rw_twoback_unch_cond_medium, file = '06_brms/model_rw_twoback_unch_cond_medium.Rdata')
+save(bayes_rw_twoback_unch_cond_medium, file = 'data/brms_data/model_rw_twoback_unch_cond_medium.Rdata')
 
 # cars --------------------------------------------------------------
-load('data/replications/yaelT.Rdata')
-task_unch=task%>%filter(reoffered_unchosen==1,reoffered_chosen==0)
+
 
 #medium prior
 bayes_rw_cars_unch_medium <-
   brm(
     formula = stay_car_unch ~ 0+Intercept+reward_n1back + (1+reward_n1back|ID),
-    data = task_unch,
+    data = cars_unch,
     family = bernoulli(link = "logit"),
     warmup = 1000,
     iter = 6000,
@@ -465,30 +414,4 @@ bayes_rw_cars_unch_medium <-
     save_pars = save_pars(all = TRUE)
   )
 
-save(bayes_rw_cars_unch_medium, file = '06_brms/model_rw_cars_unch_medium.Rdata')
-
-# dual-task ---------------------------------------------------------------
-
-load('data/replications/idoBA.Rdata')
-cards=as.data.frame.data.frame(cards)
-cards=cards%>%mutate(stay_unch_card=ch_card==lag(unch_card,default=0),
-                                             reoffer_unch_card_oneback=card_right==lag(unch_card,default=0)|card_left==lag(unch_card,default=0),
-                                             reoffer_ch_card_oneback=card_right==lag(ch_card,default=0)|card_left==lag(ch_card,default=0))
-cards_unch=cards%>%filter(subtrial==1,reoffer_unch_card_oneback,!reoffer_ch_card_oneback)
-cards_unch%>%group_by(reward_oneback)%>%summarise(mean(stay_unch_card))
-
-bayes_unch_dual_rw <-
-  brm(
-    formula=stay_unch_card~0+Intercept+rew+(1+rw_when_unch_last_appeared|subj),
-    data = cards_unch,
-    family = bernoulli(link = "logit"),
-    warmup = 1000,
-    iter = 6000,
-    chains = num_cores,
-    inits = "0",
-    cores = num_cores,
-    seed = 123,
-    prior = prior_medium_dual_unch
-  )
-save(bayes_unch_dual_rw, file = '06_brms/model_rw_dual_unch_medium.Rdata')
-
+save(bayes_rw_cars_unch_medium, file = 'data/brms_data/model_rw_cars_unch_medium.Rdata')

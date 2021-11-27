@@ -1,7 +1,7 @@
 rm(list=ls())
 
 #load data --------------------------------
-load(paste('./data/null_50subjects_500trials_4arms_simdata.Rdata',sep=""))
+load(paste('./data/modeling_data/null_100subjects_4blocks_50trials_4arms_simdata.Rdata',sep=""))
 
 df$action        =df$choice
 df$unchosen      =df$offer1
@@ -20,7 +20,7 @@ pars    <-  lapply(1:max(df$subject),
 pars=do.call(rbind,pars)
 
 #compare true and recovered ------------------------------------------------
-load('data/null_50subjects_500trials_4arms_parameters.rdata')
+load('data/modeling_data/null_100subjects_4blocks_50trials_4arms_parameters.Rdata')
 
 #alpha
 plot(true.parameters[,'alpha'],inv.logit(pars[,1]))

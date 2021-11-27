@@ -10,7 +10,7 @@ library("loo")
 library(parallel)
 detectCores()
 
-load('./data/tab_standata.Rdata')
+load('./data/modeling_data/tab_standata.Rdata')
 
 my_log_lik=list()
 for (mytestfold in 1:4){
@@ -31,6 +31,6 @@ data_for_stan$testfold=mytestfold
 }
 
 my_log_lik[[mytestfold]]=extract_log_lik(rl_fit)
-save(my_log_lik, file='./data/tab_fitted_with_null_lo-block-out.rdata')
+save(my_log_lik, file='./data/modeling_data/tab_fitted_with_null_lo-block-out.rdata')
 rm(rl_fit)
 }
