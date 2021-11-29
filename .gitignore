@@ -1,10 +1,5 @@
 archive
 graphics
-data/analysis_data
-data/bayes_data
-data/brms_data
-data/brms_model_comparison_data
-data/modeling_data
 data/replications
 data/raw_data/01_raw_json_data
 00_get_data/00_demogrhphic_data_analysis.R
