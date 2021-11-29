@@ -3,17 +3,16 @@ rm(list=ls())
 
 ####preparation------------------------------
 
-#save list with the names of all five models (to be used for saving models and parameters)
+#create list with the names of all five models (to be used for saving models and parameters)
 mymodels=list('model1_null',
               'model2_single_prediction_error',
               'model3_inverted outcome',
               'model4_two_prediction_errors',
               'model5_fixed_discount')
 
-save(mymodels,file='./data/mymodels.rdata')
 
 #general sample variables and pre-allocation
-Nsubjects           =10        
+Nsubjects           =200        
 true_parameters     =list()
 
 
@@ -46,7 +45,7 @@ true_parameters[[mymodels[[1]]]]=
 
 #true population level parameters
 population_locations    =c(qlogis(0.5),4,qlogis(0.75)) #population mean 
-population_scales       =c(1,1.5,1)                   #population sd 
+population_scales       =c(1,1.5,0.5)                  #population sd 
 
 #individual parameters 
 alpha          = plogis(population_locations[1]+population_scales[1]*rnorm(Nsubjects))
@@ -131,6 +130,6 @@ true_parameters[[mymodels[[5]]]]=
 ####check & save ------------------------------
 
 
-save(mymodels,file='./data/mymodels.rdata')
-save(true_parameters,file='./data/true_parameters.rdata')
+save(mymodels,file='./data/modeling_data/mymodels.rdata')
+save(true_parameters,file='./data/modeling_data/true_parameters.rdata')
 

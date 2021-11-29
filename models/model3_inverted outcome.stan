@@ -1,38 +1,35 @@
 data {
 
   //General fixed parameters for the experiment/models
-  int<lower = 1> Nsubjects;                                         //number of subjects
+  int<lower = 1> Nsubjects;                                      
   int<lower = 1> Nblocks;           
-  int<lower = 1> Ntrials;                                           //maximum number of trials per subject (without missing data). Used to form the subject x trials matricies. 
-  int<lower = 1> Ntrials_per_subject[Nsubjects];                    //number of trials left for each subject after data omission
-  int<lower = 2> Narms;                                             //number of overall alternatives
-  int<lower = 2> Nraffle;                                           //number of offers per trial
+  int<lower = 1> Ntrials;                                        
+  int<lower = 1> Ntrials_per_subject[Nsubjects];                 
+  int<lower = 2> Narms;                                          
+  int<lower = 2> Nraffle;                                        
 
 
   //Behavioral data:
-  //each variable being a subject x trial matrix
-  //the data is padded in make_standata function so that all subjects will have the same number of trials
-  int<lower = 0> choice[Nsubjects,Ntrials];        //index of which arm was pulled coded 1 to 4
-  int<lower = 0> unchosen[Nsubjects,Ntrials];     //index of which arm was not selected coded 1 to 4
-  int<lower = 0> reward[Nsubjects,Ntrials];            //outcome of bandit arm pull
-  int<lower = 0> offer1[Nsubjects,Ntrials];            //outcome of bandit arm pull
-  int<lower = 0> offer2[Nsubjects,Ntrials];            //outcome of bandit arm pull
-  int<lower = 0> selected_offer[Nsubjects,Ntrials];            //outcome of bandit arm pull
-  int<lower = 0> first_trial_in_block[Nsubjects,Ntrials];           //coding whether a trial is the first in a block to allow for Qval rest
+  int<lower = 0> choice[Nsubjects,Ntrials];        
+  int<lower = 0> unchosen[Nsubjects,Ntrials];      
+  int<lower = 0> reward[Nsubjects,Ntrials];        
+  int<lower = 0> offer1[Nsubjects,Ntrials];        
+  int<lower = 0> offer2[Nsubjects,Ntrials];        
+  int<lower = 0> selected_offer[Nsubjects,Ntrials];
+  int<lower = 0> first_trial_in_block[Nsubjects,Ntrials];         
 
 }
 
 transformed data{
-  int<lower = 1> Nparameters=3; //number of parameters
-  vector[Narms] Qvalue_initial;     // initial values for Qvalues (defined here to aviod doing this many times across iterations)
+  int<lower = 1> Nparameters=3;
+  vector[Narms] Qvalue_initial;
   Qvalue_initial = rep_vector(0.5, Narms);
 }
 
 parameters {
-// Declare parameters vectors. the notation "aux" indicate that the values are before transformation
   //population level parameters 
-  vector[Nparameters] population_locations;                    //vector with the population level mean for each model parameter
-  vector<lower=0>[Nparameters] population_scales;          //vector of random effects variance for each model parameter
+  vector[Nparameters] population_locations;                   
+  vector<lower=0>[Nparameters] population_scales;         
   
 //individuals level
   vector[Nsubjects] alpha_ch_random_effect;

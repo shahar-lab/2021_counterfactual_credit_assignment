@@ -1,73 +1,64 @@
 data {
 
   //General fixed parameters for the experiment/models
-  int<lower = 1> Nsubjects;                                         //number of subjects
+  int<lower = 1> Nsubjects;                                         
   int<lower = 1> Nblocks;           
-  int<lower = 1> Ntrials;                                           //maximum number of trials per subject (without missing data). Used to form the subject x trials matricies. 
-  int<lower = 1> Ntrials_per_subject[Nsubjects];                    //number of trials left for each subject after data omission
-  int<lower = 2> Narms;                                             //number of overall alternatives
-  int<lower = 2> Nraffle;                                           //number of offers per trial
-
+  int<lower = 1> Ntrials;                                           
+  int<lower = 1> Ntrials_per_subject[Nsubjects];                    
+  int<lower = 2> Narms;                                             
+  int<lower = 2> Nraffle;                                           
 
 
   //Behavioral data:
-  //each variable being a subject x trial matrix
-  //the data is padded in make_standata function so that all subjects will have the same number of trials
-  int<lower = 0> action[Nsubjects,Ntrials];        //index of which arm was pulled coded 1 to 4
-  int<lower = 0> reward[Nsubjects,Ntrials];            //outcome of bandit arm pull
-  int<lower = 0> offer1[Nsubjects,Ntrials];            //outcome of bandit arm pull
-  int<lower = 0> offer2[Nsubjects,Ntrials];            //outcome of bandit arm pull
-  int<lower = 0> selected_offer[Nsubjects,Ntrials];            //outcome of bandit arm pull
-  int<lower = 0> first_trial_in_block[Nsubjects,Ntrials];           //coding whether a trial is the first in a block to allow for Qval rest
-  int<lower = 0> fold[Nsubjects,Ntrials];           //using my block since block seems to be reserved in stan
-  real           testfold;                           //which block should be used as test
-
-
+  int<lower = 0> choice[Nsubjects,Ntrials];              
+  int<lower = 0> reward[Nsubjects,Ntrials];              
+  int<lower = 0> offer1[Nsubjects,Ntrials];              
+  int<lower = 0> offer2[Nsubjects,Ntrials];              
+  int<lower = 0> selected_offer[Nsubjects,Ntrials];      
+  int<lower = 0> first_trial_in_block[Nsubjects,Ntrials];
+  int<lower = 0> fold[Nsubjects,Ntrials];           
+  real           testfold;                          
 
 }
 
 transformed data{
-  int<lower = 1> Nparameters=2; //number of parameters
-  vector[Narms] Qvalue_initial;     // initial values for Qvalues (defined here to aviod doing this many times across iterations)
+  int<lower = 1> Nparameters=2; 
+  vector[Narms] Qvalue_initial;     
   Qvalue_initial = rep_vector(0.5, Narms);
 }
 
 parameters {
-// Declare parameters vectors. the notation "aux" indicate that the values are before transformation
-  
   //population level parameters 
-  vector[Nparameters] mu_aux;                    //vector with the population level mean for each model parameter
-  vector<lower=0>[Nparameters] sigma_aux;          //vector of random effects variance for each model parameter
+  vector         [Nparameters] population_locations;       
+  vector<lower=0>[Nparameters] population_scales;          
   
   //individuals level
-  vector[Nsubjects] alpha_individal_aux;
-  vector[Nsubjects] beta_indvidial_aux;
+  vector[Nsubjects] alpha_random_effect;
+  vector[Nsubjects] beta_random_effect;
 }
 
 
 transformed parameters {
-//declare variables and parameters
-  real  alpha[Nsubjects];
-  real  beta[Nsubjects];
+  vector<lower=0, upper=1>[Nsubjects] alpha;
+  vector                  [Nsubjects] beta;
   
   for (subject in 1:Nsubjects) {
-    alpha[subject]   = Phi_approx(mu_aux[1]  + sigma_aux[1]  * alpha_individal_aux[subject]);//
-    beta[subject]    = Phi_approx(mu_aux[2] + sigma_aux[2] * beta_indvidial_aux[subject])*10 ;//
+    alpha[subject]   = inv_logit(population_locations[1]  + population_scales[1] * alpha_random_effect[subject]);
+    beta[subject]    =          (population_locations[2]  + population_scales[2] * beta_random_effect [subject]) ;
   }
 
 }
 
 
-
 model {
   
-  // population level priors (hyper-parameters)
-  mu_aux  ~ normal(0, 1);            
-  sigma_aux ~ normal(0, 0.5);        
+  // population level  
+  population_locations  ~ normal(0, 2);            
+  population_scales     ~ cauchy(0,2);        
 
-  // indvidual level priors (subjects' parameters)
-  alpha_individal_aux~ normal(0, 1);
-  beta_indvidial_aux ~ normal(0, 1);
+  // indvidual level  
+  alpha_random_effect ~ std_normal();
+  beta_random_effect  ~ std_normal();
  
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,46 +70,41 @@ model {
     
  
       for (trial in 1:Ntrials_per_subject[subject]){
-        
-        if(fold[subject,trial] != testfold) {
-          
-        if (first_trial_in_block[subject,trial] == 1) {
+        if(fold[subject,trial] != testfold)           {
+          if (first_trial_in_block[subject,trial] == 1) {
                         Qcard=Qvalue_initial;
-        }
+          }
 
           Qoffer[1]=Qcard[offer1[subject,trial]];
           Qoffer[2]=Qcard[offer2[subject,trial]];
 
-        //liklihood function
-         target +=log_softmax(beta[subject] * Qoffer)[selected_offer[subject, trial]];
+        //like function
+         selected_offer[subject, trial] ~ categorical_logit(beta[subject] * Qoffer);
 
         //Qvalues update
-        Qcard[action[subject,trial]] += alpha[subject] * (reward[subject,trial] - Qcard[action[subject,trial]]);
+        Qcard[choice[subject,trial]] += alpha[subject] * (reward[subject,trial] - Qcard[choice[subject,trial]]);
 
-      }
+      } 
       }
   }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 generated quantities {
   //define parameters that will be saved in the final output
-  real<lower=0, upper=1>  mu_alpha;
-  real<lower=0, upper=10> mu_beta;
   real<lower=0, upper=1>  ind_alpha[Nsubjects];
-  real<lower=0, upper=10> ind_beta[Nsubjects];
-  real log_lik[Nsubjects];
+  real                    ind_beta[Nsubjects];
+  real                    log_lik[Nsubjects];
 
-
-  //population parameters
-  mu_alpha=Phi_approx(mu_aux[1]);
-  mu_beta=Phi_approx(mu_aux[2])*10;
 
   //individual parameters
   for (subject in 1:Nsubjects) {
-    ind_alpha[subject]   = Phi_approx(mu_aux[1]  + sigma_aux[1]  * alpha_individal_aux[subject]);
-    ind_beta[subject]    = Phi_approx(mu_aux[2] + sigma_aux[2] * beta_indvidial_aux[subject]) * 10;
+    ind_alpha[subject]   = inv_logit(population_locations[1]  + population_scales[1]  * alpha_random_effect[subject]);
+    ind_beta[subject]    =          (population_locations[2]  + population_scales[2]  * beta_random_effect[subject]) ;
   }
   
 
@@ -146,12 +132,9 @@ generated quantities {
           
           log_lik[subject] += categorical_logit_lpmf(selected_offer[subject, trial] | ind_beta[subject] * Qoffer);
 
-          Qcard[action[subject,trial]] += ind_alpha[subject] * (reward[subject,trial] - Qcard[action[subject,trial]]);      
+          Qcard[choice[subject,trial]] += ind_alpha[subject] * (reward[subject,trial] - Qcard[choice[subject,trial]]);      
         }
         }
     }
   }
-  
-  
-  
 }
