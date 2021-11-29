@@ -5,7 +5,7 @@
 
 #empirical data-------------------------------------------------
 rm(list=ls())
-load('./data/analysis_data/tab.Rdata')
+load('./data/tab.rdata')
 colnames(tab)
 library(dplyr)
 
