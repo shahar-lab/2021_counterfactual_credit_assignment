@@ -6,9 +6,9 @@ data/brms_data
 data/brms_model_comparison_data
 data/modeling_data
 data/replications
-data/01_raw_json_data
-data/02_raw_data_csv/cars.csv
-data/02_raw_data_csv/tab.csv
+data/raw_data/01_raw_json_data
+data/raw_data/02_raw_data_csv/cars.csv
+data/raw_data/02_raw_data_csv/tab.csv
 00_get_data/00_demogrhphic_data_analysis.R
 00_get_data/00_convert_json_to_R.R
 01_preprocessing/01_preprocess_questionnaire.R
