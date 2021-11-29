@@ -1,7 +1,7 @@
 rm(list=ls())
 library(data.table)
 library(tidyverse)
-tab<-data.table(read.csv('./data/raw_data/02_raw_data_csv/tab.csv'))
+tab<-data.table(read.csv('data/raw_data/02_raw_data_csv/tab.csv'))
 
 ###### house keeping ----------------------
 #sort trials
@@ -141,7 +141,7 @@ save(tab_unch_two, file='data/analysis_data/tab_unch_two.Rdata')
 
 
 # replication -------------------------------------------------------------
-load('data/replications/yaelT_fixed.Rdata') #fixed reward direction of win/lose
-cars_unch=task%>%filter(reoffered_chosen==0,reoffered_unchosen==1)
+cars=read.csv('data/raw_data/02_raw_data_csv/cars.csv')[,-1]
+cars_unch=cars%>%filter(reoffered_chosen==0,reoffered_unchosen==1)
 
 save(cars_unch, file='data/analysis_data/cars_unch.Rdata')
