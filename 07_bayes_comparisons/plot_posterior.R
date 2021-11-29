@@ -1,4 +1,4 @@
-plot_posterior=function(model,effect_string,xlabel){
+plot_posterior=function(model,effect_string,xlabel,ylabel="Density"){
   #Bayesian visualisation -------------------------------------------------
   library(bayestestR)
   library(bayesplot)
@@ -21,7 +21,7 @@ plot_posterior=function(model,effect_string,xlabel){
   }
   ggplot(posteriors, aes_string(x = gg_string)) +
     theme_classic()+
-    geom_density(fill = "orange") +
+    geom_density(fill="grey") +
     # The median in red
     geom_vline(
       xintercept = median(posteriors[,effect_string]),
@@ -35,5 +35,5 @@ plot_posterior=function(model,effect_string,xlabel){
                color = "royalblue",
                size = 3)+
     xlab(label=xlabel)+
-    ylab(label="Density")
+    ylab(label=ylabel)
 }

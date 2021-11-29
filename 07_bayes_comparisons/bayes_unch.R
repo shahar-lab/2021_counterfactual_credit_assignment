@@ -37,7 +37,7 @@ load('data/brms_data/model_rw_cars_unch_medium.Rdata')
 
 #Bayesian visualisation -------------------------------------------------
 source('07_bayes_comparisons/plot_posterior.R')
-plot_posterior(bayes_rw_unch_medium,"b_rw_oneback","Reward previous offer")
+plot_posterior(bayes_rw_unch_medium,"b_rw_oneback",expression(paste(beta,"_previous-outcome")),ylabel=expression(paste("P(",beta,"_previous-outcome|data)")))
 plot_posterior(bayes_rw_unch_cond_medium,"b_rw_oneback:cond","Reward X condition")
 
 

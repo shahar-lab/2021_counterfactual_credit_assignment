@@ -33,7 +33,7 @@ df<-data_1x1( array_1 = df$unrewarded,array_2 = df$rewarded,jit_distance = .09, 
 raincloud_2 <- raincloud_1x1_repmes(data = df,colors = (c('dodgerblue', 'darkorange')), fills = (c('dodgerblue', 'darkorange')),line_color = 'gray',
                                     line_alpha = .3,size = 1,  alpha = .6,  align_clouds = FALSE) +  
   scale_x_continuous(breaks=c(1,2), labels=c("unrewarded", "rewarded"), limits=c(0, 3)) +
-  xlab("previous-outcome") +  ylab("P(stay_unchosen)") + theme_classic()
+  xlab("Previous-outcome") +  ylab("P(select_unchosen)") + theme_classic()
 
 raincloud_2
 
