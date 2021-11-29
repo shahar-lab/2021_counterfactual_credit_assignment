@@ -8,6 +8,7 @@ graphics
 06_brms/06_brms_card_ch_effects.R
 07_bayes_comparisons/bayes_ch.R
 08_model_comparison/08_ch_card.R
+06_brms
 # History files
 .Rhistory
 .Rapp.history
