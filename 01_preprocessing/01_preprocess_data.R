@@ -1,5 +1,6 @@
 rm(list=ls())
 library(data.table)
+library(tidyverse)
 tab<-data.table(read.csv('./data/raw_data/02_raw_data_csv/tab.csv'))
 
 ###### house keeping ----------------------
@@ -9,7 +10,6 @@ tab$trl<-tab$trl+1
 rownames(tab) <- 1:nrow(tab)
 
 #add columns
-library(data.table)
 tab$rw[tab$cond=="neg"]   <-tab$rw[tab$cond=="neg"] +1        #add absolute outcome (1\0) column to tab
 tab$unch                  <-NA
 tab$unch[tab$ch==tab$frcA]<-tab$frcB[tab$ch==tab$frcA]

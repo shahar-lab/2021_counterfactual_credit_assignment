@@ -1,6 +1,8 @@
 archive
 data
 graphics
+00_get_data/00_demogrhphic_data_analysis.R
+00_get_data/00_convert_json_to_R.R
 # History files
 .Rhistory
 .Rapp.history
