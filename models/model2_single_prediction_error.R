@@ -42,7 +42,7 @@ for (block in 1:Nblocks){
       trial                = trial,
       first_trial_in_block = (trial==1)*1,
       choice               = choice,
-      selected_offer       = (choice==raffle[2])*1+1,
+      selected_offer       = (choice==raffle[2])*1+1, 
       unchosen             = unchosen,
       offer1               = raffle[1],
       offer2               = raffle[2],
@@ -59,7 +59,7 @@ for (block in 1:Nblocks){
        
     #updating Qvalues
     PE=(reward - Qval[choice])
-    Qval[choice]   = Qval[choice] + alpha*w*PE
+    Qval[choice]   = Qval[choice] + alpha*w*PE #isn't alpha redundent here? 
     Qval[unchosen] = Qval[unchosen] + alpha*(1-w)*-PE
     
   }

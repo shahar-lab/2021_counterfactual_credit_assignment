@@ -42,7 +42,7 @@ transformed parameters {
   
   for (subject in 1:Nsubjects) {
     alpha[subject]   = inv_logit(population_locations[1]  + population_scales[1] * alpha_random_effect[subject]);
-    beta[subject]    =          (population_locations[2]  + population_scales[2] * beta_random_effect [subject]) ;
+    beta[subject]    =          (population_locations[2]  + population_scales[2] * beta_random_effect [subject]) ; #isn't it a new outlook on exploration? shouldn't we stick to the standards for now and exponent it?
   }
 
 }
