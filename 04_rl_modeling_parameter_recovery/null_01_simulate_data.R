@@ -43,7 +43,7 @@ Nraffle             =2
   beta_indvidial_aux =rnorm(Nsubjects,0, 1);
   
   #RL parameters per individual given population and group effects
-  alpha          = pnorm(mu_aux[1]  + sigma_aux*alpha_individal_aux);
+  alpha          = pnorm(mu_aux[1]  + sigma_aux*alpha_individal_aux); #should'nt be sigma_aux[1]?
   beta           = pnorm(mu_aux[2]  + sigma_aux*beta_indvidial_aux) * beta_range;
 
   #plot true parameters
@@ -67,7 +67,7 @@ cfg = list(Nblocks         =Nblocks,
            Nraffle         =Nraffle,  #(i.e., offer Nraffle arms each trial from a deck of Narms)
            rndwlk          =rndwlk)
 
-source('./models/simulation_Narmed_bandit_task.R')
+source('./models/simulation_Narmed_bandit_task.R') #this should be sourced from somewhere else
 
 df=data.frame()
 for (subject in 1:Nsubjects) {
@@ -96,15 +96,15 @@ for (subject in seq(1:max(df$subject))){
 }
 
 df%>%group_by(subject)%>%summarise(mean(abort)) #count and omit aborted trials
-df<-df[df$abort==0,]
+df<-df[df$abort==0,] #why not tidy?
 df%>%group_by(subject)%>%summarise(mean(abort))
 
 #some housekeeping
 library(dplyr)
 
 df$action        =df$choice
-df$unchosen      =df$offer1
-df$unchosen[df$choice==df$offer1]=df$offer2[df$choice==df$offer1]
+df$unchosen      =df$offer1 
+df$unchosen[df$choice==df$offer1]=df$offer2[df$choice==df$offer1] #those two lines are not clear
 df$selected_offer=(df$choice==df$offer2)*1+1
 df=df%>%mutate(first_trial_in_block=(block!=lag(block,default = 0))*1)%>%as.data.frame()
 df$fold = df$block
@@ -144,7 +144,7 @@ plot(effect('expval_ch',model))
 
 #sanity check 2: pStay model-agnostic analysis
 df=df%>%mutate(stay=(choice==lag(choice,default=0))*1,
-               reward_oneback=lag(reward,default=0))
+               reward_oneback=lag(reward,default=0)) #why here not *1?
 
 model<-glmer(stay ~ reward_oneback+(reward_oneback| subject), 
              data = merge(df,as.data.frame(true.parameters),by=c('subject')), 

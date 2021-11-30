@@ -20,7 +20,6 @@ cfg = list(Nblocks         =4,
 simulated_data=list()
 for (m in mymodels){
   print(m)
-
   #source model
   source(paste('./models/',m,'.R',sep=""))  
   
