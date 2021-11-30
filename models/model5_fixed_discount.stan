@@ -23,7 +23,7 @@ data {
 }
 
 transformed data{
-  int<lower = 1> Nparameters=3; //number of parameters
+  int<lower = 1> Nparameters=4; //number of parameters
   vector[Narms] Qvalue_initial;     // initial values for Qvalues (defined here to aviod doing this many times across iterations)
   Qvalue_initial = rep_vector(0.5, Narms);
 }
@@ -35,24 +35,25 @@ parameters {
   vector<lower=0>[Nparameters] population_scales;          //vector of random effects variance for each model parameter
   
 //individuals level
-  vector[Nsubjects] alpha_random_effect;
+  vector[Nsubjects] alpha_ch_random_effect;
   vector[Nsubjects] beta_random_effect;
-  vector[Nsubjects] w_random_effect;
-
+  vector[Nsubjects] intercept_random_effect;
+  vector[Nsubjects] slope_random_effect;
 }
 
 
 transformed parameters {
 //declare variables and parameters
-  vector<lower=0, upper=1>[Nsubjects]  alpha;
-  vector                  [Nsubjects]  beta;
-  vector<lower=0, upper=1>[Nsubjects]  w;
-
+  vector<lower=0, upper=1> [Nsubjects]  alpha_ch;
+  vector                   [Nsubjects]  beta;
+  vector                   [Nsubjects]  intercept;
+  vector                   [Nsubjects]  slope;
     
   for (subject in 1:Nsubjects) {
-    alpha[subject]   = inv_logit(population_locations[1]  + population_scales[1]  * alpha_random_effect[subject]);
-    beta[subject]    =          (population_locations[2]  + population_scales[2]  * beta_random_effect[subject]);
-    w[subject]       = inv_logit(population_locations[3]  + population_scales[3]  * w_random_effect[subject]);
+    alpha_ch[subject]   = inv_logit(population_locations[1]  + population_scales[1]  * alpha_ch_random_effect[subject]);
+    beta[subject]       =          (population_locations[2]  + population_scales[2]  * beta_random_effect[subject]);
+    intercept[subject]  =          (population_locations[3]  + population_scales[3]  * intercept_random_effect[subject]);
+    slope[subject]      =          (population_locations[4]  + population_scales[4]  * slope_random_effect[subject]);
   }
 
 }
@@ -60,17 +61,16 @@ transformed parameters {
 
 
 model {
-  
-  // population level  
+
+   // population level  
   population_locations  ~ normal(0, 2);            
   population_scales     ~ cauchy(0,2);        
 
   // indvidual level  
-  alpha_random_effect ~ std_normal();
-  beta_random_effect  ~ std_normal();
-  w_random_effect  ~ std_normal();
-
-
+  alpha_ch_random_effect    ~ std_normal();
+  beta_random_effect        ~ std_normal();
+  intercept_random_effect  ~ std_normal();
+  slope_random_effect  ~ std_normal();
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Likelihood function per subject per trial
@@ -78,7 +78,7 @@ model {
   for (subject in 1:Nsubjects){
     vector[Narms] Qcard; 
     vector[Nraffle] Qoffer;
-    real PE;
+    real lambda;
     
 
       for (trial in 1:Ntrials_per_subject[subject]){
@@ -91,13 +91,13 @@ model {
           Qoffer[2]=Qcard[offer2[subject,trial]];
 
         //liklihood function 
-        
          selected_offer[subject, trial] ~ categorical_logit(beta[subject] * Qoffer);
             
         //Qvalues update
-        PE = (reward[subject,trial] - Qcard[choice[subject,trial]]);
-        Qcard[choice[subject,trial]] += alpha[subject] * w[subject] * PE;
-        Qcard[unchosen[subject,trial]] += alpha[subject] * (1-w[subject]) * -PE;
+        lambda = intercept[subject]+slope[subject]*reward[subject,trial];
+        lambda = exp(lambda)/(1+exp(lambda));
+        Qcard[choice[subject,trial]] += alpha_ch[subject] * (reward[subject,trial] - Qcard[choice[subject,trial]]);
+        Qcard[unchosen[subject,trial]] += lambda*Qcard[unchosen[subject,trial]];
 
       } 
   }

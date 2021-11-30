@@ -3,10 +3,10 @@ sim.block = function(subject,parameters,cfg){
   print(paste('subject',subject))
 #preallocation
   #set parameters
-  alpha_ch = parameters['alpha_chosen']
-  alpha_unch = parameters['alpha_unchosen']
-  beta  = parameters['beta']
-
+  alpha_ch  = parameters['alpha_chosen']
+  beta      = parameters['beta']
+  intercept = parameters['intercept']
+  slope     = parameters['slope']
   #set initial var
   Narms     = cfg$Narms
   Nraffle   = cfg$Nraffle
@@ -61,7 +61,9 @@ for (block in 1:Nblocks){
     
     #updating Qvalues
     Qval[choice]   = Qval[choice] + alpha_ch*(reward - Qval[choice])
-    Qval[unchosen] = Qval[unchosen] + alpha_unch*((1-reward) - Qval[unchosen])
+    lambda         = intercept + slope*reward
+    lambda         = exp(lambda)/(1+exp(lambda))
+    Qval[unchosen] = lambda*Qval[unchosen]
     
   }
 }     
