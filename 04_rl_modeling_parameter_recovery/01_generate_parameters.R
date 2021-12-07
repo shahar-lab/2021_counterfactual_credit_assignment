@@ -64,13 +64,13 @@ true_parameters[[mymodels[[2]]]]=
 #parameters: learning rate chosen, noise parameter and learning rate unchosen 
 
 #true population level parameters
-population_locations    =c(qlogis(0.5),4,qlogis(0.5)) #population mean 
+population_locations    =c(qlogis(0.5),4,qlogis(0.75)) #population mean 
 population_scales       =c(1,1.5,1)                  #population sd
 
 #individual parameters 
 alpha_chosen   = plogis(population_locations[1]+population_scales[1]*rnorm(Nsubjects))
 beta           =       (population_locations[2]+population_scales[2]*rnorm(Nsubjects))
-alpha_unchosen = plogis(population_locations[3]+population_scales[3]*rnorm(Nsubjects))
+lambda         = plogis(population_locations[3]+population_scales[3]*rnorm(Nsubjects))
 
 #save
 true_parameters[[mymodels[[3]]]]= 
@@ -78,7 +78,7 @@ true_parameters[[mymodels[[3]]]]=
   cbind(subject=seq(1,Nsubjects),
         alpha_chosen   =alpha_chosen,
         beta           =beta,
-        alpha_unchosen =alpha_unchosen)
+        lambda =lambda)
 
 
 ####model4_two_prediction_errors------------------------------
@@ -105,6 +105,6 @@ true_parameters[[mymodels[[4]]]]=
 ####check & save ------------------------------
 
 
-#save(mymodels,file='./data/modeling_data/mymodels.rdata')
-#save(true_parameters,file='./data/modeling_data/true_parameters.rdata')
+save(mymodels,file='./data/modeling_data/mymodels.rdata')
+save(true_parameters,file='./data/modeling_data/true_parameters.rdata')
 

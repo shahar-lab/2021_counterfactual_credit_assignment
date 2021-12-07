@@ -10,8 +10,8 @@ mystan_models_loo=list()
 
 for (m in mymodels){
   print(m)
-  #mystan_models[[m]]    =stan_model(paste('./models/',m,'.stan',sep=""))
-  mystan_models_loo[[m]]=stan_model(paste('./models/',m,'_loo.stan',sep=""))
+  mystan_models[[m]]    =stan_model(paste('./models/',m,'.stan',sep=""))
+  #mystan_models_loo[[m]]=stan_model(paste('./models/',m,'_loo.stan',sep=""))
   
 }
 

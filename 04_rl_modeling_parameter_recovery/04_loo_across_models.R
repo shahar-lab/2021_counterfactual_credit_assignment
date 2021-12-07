@@ -11,8 +11,9 @@ library(loo)
 
 my_log_lik=
 lapply(mymodels, function(d) {
-  lapply(mymodels, function(m) {
+  lapply(mymodels[[3]], function(m) {
     lapply(1:4, function(mytestfold) {
+    print(Sys.time())
     print(d)
     print(m)
     print(mytestfold)
@@ -30,7 +31,10 @@ lapply(mymodels, function(d) {
   
     })
   })
+  
+  
+  
 })
   
   
-save(my_log_lik,file='./data/modeling_data/my_log_lik_model_recovery.rdata')
+#save(my_log_lik,file='./data/modeling_data/my_log_lik_model_recovery.rdata')

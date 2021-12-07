@@ -4,7 +4,7 @@ sim.block = function(subject,parameters,cfg){
 #preallocation
   #set parameters
   alpha_ch = parameters['alpha_chosen']
-  alpha_unch = parameters['alpha_unchosen']
+  lambda = parameters['lambda']
   beta  = parameters['beta']
 
   #set initial var
@@ -63,7 +63,7 @@ for (block in 1:Nblocks){
     PEchosen       = (reward - Qval[choice])
     PEunchosen     = ((1-reward) - Qval[choice])
     Qval[choice]   = Qval[choice] + alpha_ch*PEchosen
-    Qval[unchosen] = Qval[unchosen] + alpha_unch*PEunchosen
+    Qval[unchosen] = Qval[unchosen] + alpha_ch*lambda*PEunchosen
     
   }
 }     

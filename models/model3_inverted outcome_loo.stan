@@ -82,7 +82,7 @@ model {
 
     
       for (trial in 1:Ntrials_per_subject[subject]){
-          if(fold[subject,trial] == testfold) {
+          if(fold[subject,trial] != testfold) {
           if (first_trial_in_block[subject,trial] == 1) {
                         Qcard=Qvalue_initial;
         }

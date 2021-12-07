@@ -10,21 +10,21 @@ library(rstan)
 library(parallel)
 
 pars=list()
-for (m in mymodels){
+for (m in mymodels[[3]]){
   print(m)
 
   fit<- sampling(mystan_models[[m]], 
                  data=simulated_data[[m]], 
-                 iter=200,
-                 warmup = 100,
-                 chains=1,
-                 cores =1) 
+                 iter=2000,
+                 warmup = 1000,
+                 chains=8,
+                 cores =8) 
 
 
   pars[[m]] <- rstan::extract(fit, permuted = TRUE)
 }
 
-#save(pars,file='./data/modeling_data/pars.rdata')
+save(pars,file='./data/modeling_data/pars.rdata')
 
 
 
@@ -44,7 +44,7 @@ recovered_parameters[[mymodels[[2]]]]= cbind(subject=seq(1,Nsubjects),
 recovered_parameters[[mymodels[[3]]]]= cbind(subject=seq(1,Nsubjects),
                                              alpha_chosen   =apply(pars[[mymodels[[3]]]]$alpha_ch, 2, mean),
                                              beta           =apply(pars[[mymodels[[3]]]]$beta, 2, mean),
-                                             alpha_unchosen =apply(pars[[mymodels[[3]]]]$alpha_unch, 2, mean))
+                                             lambda         =apply(pars[[mymodels[[3]]]]$lambda, 2, mean))
 
 recovered_parameters[[mymodels[[4]]]]= cbind(subject=seq(1,Nsubjects),
                                              alpha_chosen   =apply(pars[[mymodels[[4]]]]$alpha_ch, 2, mean),

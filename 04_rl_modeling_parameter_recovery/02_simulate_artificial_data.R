@@ -18,7 +18,7 @@ cfg = list(Nblocks         =4,
 
 ####run simulation across five models for all artificial subjects------------------------
 simulated_data=list()
-for (m in mymodels){
+for (m in mymodels[[3]]){
   print(m)
 
   #source model

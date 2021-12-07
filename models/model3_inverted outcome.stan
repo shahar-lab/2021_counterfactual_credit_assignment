@@ -34,7 +34,7 @@ parameters {
 //individuals level
   vector[Nsubjects] alpha_ch_random_effect;
   vector[Nsubjects] beta_random_effect;
-  vector[Nsubjects] alpha_unch_random_effect;
+  vector[Nsubjects] lambda_random_effect;
 
 }
 
@@ -43,13 +43,13 @@ transformed parameters {
 //declare variables and parameters
   vector<lower=0, upper=1>[Nsubjects]  alpha_ch;
   vector                  [Nsubjects]  beta;
-  vector<lower=0, upper=1>[Nsubjects]  alpha_unch;
+  vector<lower=0, upper=1>[Nsubjects]  lambda;
 
     
   for (subject in 1:Nsubjects) {
     alpha_ch[subject]   = inv_logit(population_locations[1]  + population_scales[1]  * alpha_ch_random_effect[subject]);
     beta[subject]       =          (population_locations[2]  + population_scales[2]  * beta_random_effect[subject]);
-    alpha_unch[subject] = inv_logit(population_locations[3]  + population_scales[3]  * alpha_unch_random_effect[subject]);
+    lambda[subject]     = inv_logit(population_locations[3]  + population_scales[3]  * lambda_random_effect[subject]);
   }
 
 }
@@ -65,7 +65,7 @@ model {
   // indvidual level  
   alpha_ch_random_effect    ~ std_normal();
   beta_random_effect        ~ std_normal();
-  alpha_unch_random_effect  ~ std_normal();
+  lambda_random_effect      ~ std_normal();
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -96,7 +96,7 @@ model {
         PE_unchosen = ((1-reward[subject,trial]) - Qcard[choice[subject,trial]]);
 
         Qcard[choice[subject,trial]] += alpha_ch[subject] * PE_chosen;
-        Qcard[unchosen[subject,trial]] += alpha_unch[subject] * PE_unchosen;
+        Qcard[unchosen[subject,trial]] += alpha_ch[subject]*lambda[subject] * PE_unchosen;
 
       } 
   }
