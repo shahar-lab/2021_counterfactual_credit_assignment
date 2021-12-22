@@ -1,7 +1,7 @@
 rm(list=ls())
 library(data.table)
 library(tidyverse)
-tab<-data.table(read.csv('data/raw_data/02_raw_data_csv/tab.csv'))
+tab<-data.table(read.csv('data/raw_data/02_raw_data_csv/df.csv'))
 
 ###### house keeping ----------------------
 #sort trials
