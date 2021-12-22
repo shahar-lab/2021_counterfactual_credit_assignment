@@ -1,0 +1,14 @@
+The current folder is aimed at generating parameter and model recovery for five 
+RL models in respect to updating of an unchosen option:
+
+* model1_null (no updating)
+* model2_single_prediction_error (unchosen is updated according to a portion of the chosen PE)
+* model3_inverted outcome (unchosen is updated according to inverted outcome and the Qvalue of the chosen option)
+* model4_two_prediction_errors (unchosen is updating according to its own Qvalue and inverted outcome)
+* model5_fixed_discount (unchosen is discounted in a fix rate after reward and unrewarded outcomes, with no prediction error)
+
+You will find the following files generating the code pipeline:
+01_generate_parameters (where parameters for each model are stored in "true_parameters" list)
+02_model_fitting (where mcmc results are stored in "recovered_parameters" list to be used for parameter recovery results)
+03_loo_cv (where each data is fitted with all models, and a elpd per block is stored in "elpd_results")
+04_analysis (where we generate and export the finle parameter recovery and model recovery results)
