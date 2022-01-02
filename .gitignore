@@ -1,14 +1,8 @@
+*.rdata
+*.csv
 archive
 graphics
-data/replications
-data/raw_data/01_raw_json_data
-00_get_data/00_demogrhphic_data_analysis.R
-00_get_data/00_convert_json_to_R.R
-01_preprocessing/01_preprocess_questionnaire.R
-03_regression_analysis/02_data_analysis_key_effects.R
-06_brms/06_brms_card_ch_effects.R
-07_bayes_comparisons/bayes_ch.R
-08_model_comparison/08_ch_card.R
+
 # History files
 .Rhistory
 .Rapp.history
