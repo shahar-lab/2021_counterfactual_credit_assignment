@@ -9,8 +9,34 @@ library(lme4)
 library(raincloudplots)
 
 rm(list=ls())
-load('./empirical data/df.rdata')
+load('./data/empirical_data-df.rdata')
 df<-na.omit(df)
+
+
+
+x=df%>%group_by(subject)%>%summarise(mean_acc=mean(acc))
+
+x=merge(x,parameters,by=c('subject'))
+
+Anova(lm(mean_acc~alpha_unchosen,data=x))
+model= glmer(acc ~ alpha_chosen+alpha_unchosen+beta+(1| subject), 
+             data = df, 
+             family = binomial,
+             control = glmerControl(optimizer = "bobyqa"), nAGQ = 0)
+
+cor.test(parameters$alpha_chosen,parameters$alpha_unchosen)
+
+plot(effect('alpha_unchosen',model,xlevels=4))
+
+
+
+
+
+
+
+
+
+
 
 
 model= glmer(stay_frc_ch ~ reward_oneback+(reward_oneback| subject), 

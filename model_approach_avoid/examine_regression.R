@@ -1,12 +1,15 @@
 # Aim: Run some basic sanity checks using linear / logistic regression
+rm(list=ls())
+myfolder='./model_approach_avoid/'
+#--------------------------------------------------------------------------------------------------------
 
 library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(lme4)
 library(effects)
-load('./model_double_updating/simdata.Rdata')
-load('./model_double_updating/simdata_using_empirical_parameters.Rdata')
+load(paste0(myfolder,'./data/simdata_based_on_empirical_parameters.rdara'))
+load(paste0(myfolder,'./data/simulate_data_based_on_artificial_parameters.rdata'))
 
 
 

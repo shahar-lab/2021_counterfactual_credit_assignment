@@ -1,7 +1,7 @@
 #This code generate artificial model parameters in an hierarchical structure
 
 rm(list=ls())
-myfolder='./model_double_updating/'
+myfolder='./model_approach_avoid/'
 #--------------------------------------------------------------------------------------------------------
 
 # set sample size

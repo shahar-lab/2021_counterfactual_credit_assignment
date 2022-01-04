@@ -1,16 +1,16 @@
 #This code generate artificial data based on simulated parameters
 
 rm(list=ls())
-
-
+myfolder='./model_approach_avoid/'
+#--------------------------------------------------------------------------------------------------------
 
 #load parameters
-load('./model_double_updating/estimated_parameters_empirical_data.Rdata')
+load(paste0(myfolder,'data/modelfit_estimated_parameters_based_on_empirical_data.rdata'))
 
 #set sample size
 Nsubjects =dim(pars$alpha_ch)[2] 
 parameters=
-data.frame(subject=seq(1,Nsubjects),
+cbind(subject=seq(1,Nsubjects),
            alpha_chosen   =apply(pars$alpha_ch,2,mean),
            beta           =apply(pars$beta,2,mean),
            alpha_unchosen =apply(pars$alpha_unch,2,mean))
@@ -24,7 +24,7 @@ cfg = list(Nblocks         =4,
            rndwlk          =read.csv('./functions/rndwlk.csv',header=F))
 
 #run simulation
-source('./model_double_updating/model.R')
+source(paste0(myfolder,'files/model.R'))
 
 df=data.frame()
 for (subject in 1:Nsubjects) {
@@ -32,6 +32,6 @@ for (subject in 1:Nsubjects) {
 }
 
 #save
-save(df,file='./model_double_updating/simdata_using_empirical_parameters.Rdata')
+save(df,file=paste0(myfolder,'data/simulate_data_based_on_empirical_parameters.Rdata'))
 
 

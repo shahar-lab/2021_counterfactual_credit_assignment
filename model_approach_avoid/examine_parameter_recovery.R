@@ -1,15 +1,15 @@
 #This code plot recovered parameters against the true parameters
-
-
 rm(list=ls())
-model_name=c('null')
-load(paste('./data/',model_name,'_recovered_parameters.rdata',sep=""))
-load(paste('./data/',model_name,'_true_parameters.Rdata',sep=""))
+myfolder='./model_approach_avoid/'
+#--------------------------------------------------------------------------------------------------------
 
+load(paste0(myfolder,'modelfit_based_on_artificial_parameters.rdata',sep=""))
+load(paste0(myfolder,'simulate_parameters.Rdata',sep=""))
 
 library(ggplot2)
 library(ggpubr)
 library(bayestestR)
+
 #-------------------------------------------------------------------------------------------------------------
 # #population level parameters
 source('./functions/my_posteriorplot.R')

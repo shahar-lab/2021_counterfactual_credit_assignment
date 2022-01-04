@@ -1,9 +1,11 @@
 #This code generate artificial data based on simulated parameters
 
 rm(list=ls())
+myfolder='./model_double_updating/'
+#--------------------------------------------------------------------------------------------------------
 
 #load parameters
-load('./model_double_updating/true_parameters.Rdata')
+load(paste0(myfolder,'data/simulate_parameters.Rdata'))
 
 
 #set sample size
@@ -17,7 +19,7 @@ cfg = list(Nblocks         =4,
            rndwlk          =read.csv('./functions/rndwlk.csv',header=F))
 
 #run simulation
-source('./model_double_updating/model.R')
+source(paste0(myfolder,'files/model.R'))
 
 df=data.frame()
 for (subject in 1:Nsubjects) {
@@ -25,7 +27,7 @@ for (subject in 1:Nsubjects) {
 }
 
 #save
-save(df,file='./model_double_updating/simdata.Rdata')
+save(df,file=paste0(myfolder,'data/simulate_data_based_on_artificial_parameters.Rdata'))
 
 
 ###convert to a standata format ###----------------------------------------------------------------------------------
@@ -44,6 +46,6 @@ data_for_stan<-make_mystandata(data=df,
                                  'selected_offer'),
                                additional_arguments=list(Narms=4, Nraffle=2))
 
-save(data_for_stan,file='./model_double_updating/standata.Rdata')
+save(data_for_stan,file=paste0(myfolder,'data/simulate_standata_based_on_artificial_parameters.Rdata'))
 
 

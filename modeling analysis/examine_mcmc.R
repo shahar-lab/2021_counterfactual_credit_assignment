@@ -1,8 +1,9 @@
 rm(list=ls())
-model_name=c('null')
-folder_name=c('')
+myfolder='./model_double_updating/'
+#--------------------------------------------------------------------------------------------------------
 
-rl_fit=readRDS(paste('./data/',model_name,'_RDSfile.rds',sep=""))
+
+rl_fit=readRDS(paste0(myfolder,'modelfit_based_on_empirical_data.rds'))
 library(bayesplot)
 library(ggplot2)
 library(rstan)

@@ -87,4 +87,4 @@ df<-df[rt>200 & rt<4000]
 #remove first trial of every block
 df<-df[trl>1]
 
-save(df, file='empirical data/df.rdata')
+save(df, file='data/empirical_data-df.rdata')

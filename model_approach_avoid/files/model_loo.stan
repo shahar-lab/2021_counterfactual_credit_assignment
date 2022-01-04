@@ -76,6 +76,7 @@ model {
 
   for (subject in 1:Nsubjects){
     vector[Narms] Qcard; 
+    vector[Narms] Qavoid; 
     vector[Nraffle] Qoffer; 
     
 
@@ -84,6 +85,7 @@ model {
             
           if (first_trial_in_block[subject,trial] == 1) {
                         Qcard=Qvalue_initial;
+                        Qavoid=Qvalue_initial;
         }
         
           Qoffer[1]=Qcard[offer1[subject,trial]];
@@ -93,12 +95,16 @@ model {
          selected_offer[subject, trial] ~ categorical_logit(beta[subject] * Qoffer);
             
         //Qvalues update
-        Qcard[choice[subject,trial]] += alpha_ch[subject] * (reward[subject,trial] - Qcard[choice[subject,trial]]);
-        Qcard[unchosen[subject,trial]] += alpha_unch[subject] * ((1-reward[subject,trial]) - Qcard[unchosen[subject,trial]]);
+        Qcard[choice[subject,trial]]    += alpha_ch[subject] * (reward[subject,trial] - Qcard[choice[subject,trial]]);
+        Qavoid[unchosen[subject,trial]] += alpha_unch[subject] * (reward[subject,trial] - Qavoid[unchosen[subject,trial]]);
 
       }
       }
   }
+  
+  
+  
+  
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,19 +113,20 @@ generated quantities {
 
   matrix[Nsubjects,Ntrials]     log_lik;
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Likelihood function per subject per trial (placed in generetaed quantities block to save time and memory)
 
   { //
-      log_lik=rep_matrix(0,Nsubjects,Ntrials);
-
+    log_lik=rep_matrix(0,Nsubjects,Ntrials);
+        
     for (subject in 1:Nsubjects) {
-        vector[Narms] Qcard;
+        vector[Narms]   Qcard;
+        vector[Narms]   Qavoid; 
         vector[Nraffle] Qoffer;
 
-
         Qcard=Qvalue_initial;
+        Qavoid=Qvalue_initial;
+
 
 
         for (trial in 1:Ntrials_per_subject[subject]){
@@ -134,8 +141,8 @@ generated quantities {
         log_lik[subject,trial] = categorical_logit_lpmf(selected_offer[subject, trial] | beta[subject] * Qoffer);
 
         //Qvalues update
-        Qcard[choice[subject,trial]]   += alpha_ch[subject] * (reward[subject,trial] - Qcard[choice[subject,trial]]);
-        Qcard[unchosen[subject,trial]] += alpha_unch[subject] * ((1-reward[subject,trial]) - Qcard[unchosen[subject,trial]]);
+        Qcard[choice[subject,trial]]    += alpha_ch  [subject] * (reward[subject,trial] - Qcard[choice[subject,trial]]);
+        Qavoid[unchosen[subject,trial]] += alpha_unch[subject] * (reward[subject,trial] - Qavoid[unchosen[subject,trial]]);
         }
         }
     }
