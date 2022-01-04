@@ -13,8 +13,8 @@ library(parallel)
 detectCores()
 
 #load data
-load('./empirical data/data/empirical_data_standata.rdata')
-load(paste0(myfolder,'data/modelfit_compile_loo.rdata'))
+load('./data/empirical data/empirical_data_standata.rdata')
+load(paste0('data/',myfolder,'modelfit_compile_loo.rdata'))
 
 like=
   lapply(1:4, function(mytestfold) {
@@ -25,21 +25,18 @@ like=
     fit<- sampling(my_compiledmodel, 
                    data=data_for_stan, 
                    pars=c('log_lik'),
-                   iter=2000,
-                   warmup = 1000,
+                   iter=20,
+                   warmup = 10,
                    chains=4,
                    cores =4) 
     pars=extract(fit)
     pars$log_lik
   })
 
-
+#aggregate across all four blocks
 like=like[[1]]+like[[2]]+like[[3]]+like[[4]]
-like_temp=list()
 
-
-
-save(like, file=paste0(myfolder,'data/modelfit_like_per_trial_and_chain.rdata'))
+save(like, file=paste0('data/',myfolder,'modelfit_like_per_trial_and_chain.rdata'))
 
 # save mean predicted probability per trial (across samples)
 like   =t(sapply(1:dim(like)[1], function(i){x=c(t(like[i,,]))
@@ -47,7 +44,7 @@ like   =t(sapply(1:dim(like)[1], function(i){x=c(t(like[i,,]))
                                              x=na.omit(x)}))
 like=apply(like,2,mean)
 
-save(like, file=paste0(myfolder,'data/modelfit_like_per_trial.rdata'))
+save(like, file=paste0('data/',myfolder,'modelfit_like_per_trial.rdata'))
 
 
 
