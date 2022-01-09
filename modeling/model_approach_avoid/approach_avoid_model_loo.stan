@@ -88,8 +88,8 @@ model {
                         Qavoid=Qvalue_initial;
         }
         
-          Qoffer[1]=Qcard[offer1[subject,trial]];
-          Qoffer[2]=Qcard[offer2[subject,trial]];
+          Qoffer[1]=Qcard[offer1[subject,trial]]+Qavoid[offer2[subject,trial]];
+          Qoffer[2]=Qcard[offer2[subject,trial]]+Qavoid[offer1[subject,trial]];
 
         //liklihood function 
          selected_offer[subject, trial] ~ categorical_logit(beta[subject] * Qoffer);
@@ -134,8 +134,8 @@ generated quantities {
          if(fold[subject,trial] == testfold) {
 
         //offer values
-          Qoffer[1]=Qcard[offer1[subject,trial]];
-          Qoffer[2]=Qcard[offer2[subject,trial]];
+          Qoffer[1]=Qcard[offer1[subject,trial]]+Qavoid[offer2[subject,trial]];;
+          Qoffer[2]=Qcard[offer2[subject,trial]]+Qavoid[offer1[subject,trial]];;
 
         // compute log likelihood of current trial
         log_lik[subject,trial] = categorical_logit_lpmf(selected_offer[subject, trial] | beta[subject] * Qoffer);
