@@ -1,2 +1,2 @@
 "V1"
-"1" "double_updating"
+"1" "single_prediction_error"

@@ -1,0 +1,28 @@
+#This code plot recovered parameters against the true parameters
+
+rm(list=ls())
+# samples x observations
+
+#--------------------------------------------------------------------------------------------------------
+library(loo)
+
+mymodel='null'
+load(paste0('data/model_',mymodel,'/modelfit_like_per_trial.rdata'))
+null=elpd(like)$pointwise[,1]
+
+mymodel='double_updating'
+load(paste0('data/model_',mymodel,'/modelfit_like_per_trial.rdata'))
+double_updating=elpd(like)$pointwise[,1]
+
+#compare model trial-by-trial-----------------------------------------
+library(dplyr)
+library(tidyr)
+load('./data/empirical_data/df.rdata')
+df=cbind(df,null=null,double_updating=double_updating)
+names(df)
+df%>%mutate(elpd_diff=double_updating-null)%>%
+     group_by(reoffer_unch)%>%
+     summarise(mean(elpd_diff))
+
+t.test(df$null[df$reoffer_unch],df$double_updating[df$reoffer_unch],paired=T)
+t.test(df$null[!df$reoffer_unch],df$double_updating[!df$reoffer_unch],paired=T)

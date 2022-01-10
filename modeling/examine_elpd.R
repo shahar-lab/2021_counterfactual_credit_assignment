@@ -35,8 +35,8 @@ dim(like)
 approach_avoid=elpd(like)
 
 
-
-
-
-loo_compare(null,deliberation,approach_avoid)
+loo_compare(null,double_updating)
 t.test(null,deliberation)
+
+#compare model trial-by-trial-----------------------------------------
+load('./data/empirical_data/df.rdata')
