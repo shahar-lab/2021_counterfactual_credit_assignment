@@ -18,7 +18,7 @@ deliberation=elpd(like)
 
 
 mymodel='single_prediction_error'
-load(paste0('data/model_',mymodel,'/modelfit_like_per_trial_and_chain.rdata'))
+load(paste0('data/model_',mymodel,'/modelfit_like_per_trial.rdata'))
 dim(like)
 single_prediction_error=elpd(like)
 
@@ -35,8 +35,5 @@ dim(like)
 approach_avoid=elpd(like)
 
 
-loo_compare(null,double_updating)
+loo_compare(null,deliberation,single_prediction_error,double_updating,approach_avoid)
 t.test(null,deliberation)
-
-#compare model trial-by-trial-----------------------------------------
-load('./data/empirical_data/df.rdata')
