@@ -37,7 +37,7 @@ parameters {
 //individuals level
   vector[Nsubjects] alpha_ch_random_effect;
   vector[Nsubjects] beta_random_effect;
-  vector[Nsubjects] alpha_unch_random_effect;
+  vector[Nsubjects] omega_random_effect;
 
 }
 
@@ -46,13 +46,13 @@ transformed parameters {
 //declare variables and parameters
   vector<lower=0, upper=1>[Nsubjects]  alpha_ch;
   vector                  [Nsubjects]  beta;
-  vector<lower=0, upper=1>[Nsubjects]  alpha_unch;
+  vector<lower=0, upper=1>[Nsubjects]  omega;
 
     
   for (subject in 1:Nsubjects) {
     alpha_ch[subject]   = inv_logit(population_locations[1]  + population_scales[1]  * alpha_ch_random_effect[subject]);
     beta[subject]       =          (population_locations[2]  + population_scales[2]  * beta_random_effect[subject]);
-    alpha_unch[subject] = inv_logit(population_locations[3]  + population_scales[3]  * alpha_unch_random_effect[subject]);
+    omega[subject]      = inv_logit(population_locations[3]  + population_scales[3]  * omega_random_effect[subject]);
   }
 
 }
@@ -68,7 +68,7 @@ model {
   // indvidual level  
   alpha_ch_random_effect    ~ std_normal();
   beta_random_effect        ~ std_normal();
-  alpha_unch_random_effect  ~ std_normal();
+  omega_random_effect  ~ std_normal();
  
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,15 +88,15 @@ model {
                         Qavoid=Qvalue_initial;
         }
         
-          Qoffer[1]=Qcard[offer1[subject,trial]]+Qavoid[offer2[subject,trial]];
-          Qoffer[2]=Qcard[offer2[subject,trial]]+Qavoid[offer1[subject,trial]];
+          Qoffer[1]=omega[subject]*Qcard[offer1[subject,trial]]+(1-omega[subject])*Qavoid[offer2[subject,trial]];
+          Qoffer[2]=omega[subject]*Qcard[offer2[subject,trial]]+(1-omega[subject])*Qavoid[offer1[subject,trial]];
 
         //liklihood function 
          selected_offer[subject, trial] ~ categorical_logit(beta[subject] * Qoffer);
             
         //Qvalues update
         Qcard[choice[subject,trial]]    += alpha_ch[subject] * (reward[subject,trial] - Qcard[choice[subject,trial]]);
-        Qavoid[unchosen[subject,trial]] += alpha_unch[subject] * (reward[subject,trial] - Qavoid[unchosen[subject,trial]]);
+        Qavoid[unchosen[subject,trial]] += alpha_ch[subject] * (reward[subject,trial] - Qavoid[unchosen[subject,trial]]);
 
       }
       }
@@ -134,15 +134,15 @@ generated quantities {
          if(fold[subject,trial] == testfold) {
 
         //offer values
-          Qoffer[1]=Qcard[offer1[subject,trial]]+Qavoid[offer2[subject,trial]];;
-          Qoffer[2]=Qcard[offer2[subject,trial]]+Qavoid[offer1[subject,trial]];;
+          Qoffer[1]=omega[subject]*Qcard[offer1[subject,trial]]+(1-omega[subject])*Qavoid[offer2[subject,trial]];;
+          Qoffer[2]=omega[subject]*Qcard[offer2[subject,trial]]+(1-omega[subject])*Qavoid[offer1[subject,trial]];;
 
         // compute log likelihood of current trial
         log_lik[subject,trial] = categorical_logit_lpmf(selected_offer[subject, trial] | beta[subject] * Qoffer);
 
         //Qvalues update
-        Qcard[choice[subject,trial]]    += alpha_ch  [subject] * (reward[subject,trial] - Qcard[choice[subject,trial]]);
-        Qavoid[unchosen[subject,trial]] += alpha_unch[subject] * (reward[subject,trial] - Qavoid[unchosen[subject,trial]]);
+        Qcard[choice[subject,trial]]    += alpha_ch [subject] * (reward[subject,trial] - Qcard[choice[subject,trial]]);
+        Qavoid[unchosen[subject,trial]] += alpha_ch [subject] * (reward[subject,trial] - Qavoid[unchosen[subject,trial]]);
         }
         }
     }

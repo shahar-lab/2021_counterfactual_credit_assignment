@@ -9,9 +9,26 @@ library(lme4)
 library(raincloudplots)
 
 rm(list=ls())
-load('./data/empirical_data-df.rdata')
+load('./data/empirical_data/df.rdata')
 df<-na.omit(df)
 
+#estimating model-independent reward influence on unchosen action----------------------------------------------------------------
+
+#fit hierarchical regression and save individual estimates
+model= glmer(stay_frc_unch ~ reward_oneback+(reward_oneback| subject), 
+             data = df%>%filter(reoffer_ch==F,reoffer_unch==T), 
+             family = binomial,
+             control = glmerControl(optimizer = "bobyqa"), nAGQ = 1)
+
+unchosen_oneback_effect=coef(model)$subject[,2]
+save(unchosen_oneback_effect,file='./data/empirical_data/unchosen_oneback_effect_hierarchical_fit_glmer.rdata')
+
+
+my_posteriorplot(x       = unchosen_oneback_effect,
+                 myxlim  = c(-.5,+.5),
+                 my_vline= 0, 
+                 myxlab  = expression(beta['previous-outcome']),
+                 mycolor = "dark purple")
 
 
 x=df%>%group_by(subject)%>%summarise(mean_acc=mean(acc))

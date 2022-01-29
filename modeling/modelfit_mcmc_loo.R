@@ -8,7 +8,7 @@ source('./functions/my_starter.R')
 detectCores()
 
 #load data
-load('./data/empirical data/empirical_data_standata.rdata')
+load('./data/empirical_data/standata.rdata')
 load(paste0(data_path,'/modelfit_compile_loo.rdata'))
 
 like=

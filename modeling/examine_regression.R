@@ -1,6 +1,7 @@
 # Aim: Run some basic sanity checks using linear / logistic regression
 rm(list=ls())
-myfolder='./model_double_updating/'
+
+
 #--------------------------------------------------------------------------------------------------------
 
 
