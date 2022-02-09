@@ -4,7 +4,7 @@ sim.block = function(subject,parameters,cfg){
 #preallocation
   #set parameters
   alpha_ch = parameters['alpha_chosen']
-  alpha_unch = parameters['alpha_unchosen']
+  omega = parameters['omega']
   beta  = parameters['beta']
 
   #set initial var
@@ -19,6 +19,7 @@ sim.block = function(subject,parameters,cfg){
 for (block in 1:Nblocks){
   Qval            = as.matrix(t(rep(0.5,Narms)))
   Qavoid          = as.matrix(t(rep(0.5,Narms)))
+  Qoffer          =c(0,0)
   colnames(Qval)  =sapply(1:Narms, function(n) {paste('Qbandit',n,sep="")})
   colnames(Qavoid)=sapply(1:Narms, function(n) {paste('Qavoid',n,sep="")})
   
@@ -29,7 +30,10 @@ for (block in 1:Nblocks){
     raffle    = sort(raffle)
     
     #players choice
-    p         = exp(beta*(Qval[raffle]+Qavoid[rev(raffle)])) / sum(exp(beta*(Qval[raffle]+Qavoid[rev(raffle)])))
+    Qoffer[1]=omega*Qval[raffle[1]]+(1-omega)*Qavoid[raffle[2]];
+    Qoffer[2]=omega*Qval[raffle[2]]+(1-omega)*Qavoid[raffle[1]];
+
+    p         = exp(beta*(Qoffer)) / sum(exp(beta*(Qoffer)))
     choice    = sample(raffle,1,prob=p)
     unchosen  = raffle[choice!=raffle]
     
@@ -53,7 +57,7 @@ for (block in 1:Nblocks){
       expval_ch            = expvalues[choice,trial],
       expval_unch          = expvalues[unchosen,trial],
       Qval_ch              = Qval[choice],
-      Qval_unch            = Qval[unchosen],
+      Qavoid               = Qavoid[unchosen],
       reward               = reward
     )
     
@@ -69,7 +73,7 @@ for (block in 1:Nblocks){
     
     #updating Qvalues
     Qval[choice]     = Qval[choice]     + alpha_ch*(reward - Qval[choice])
-    Qavoid[unchosen] = Qavoid[unchosen] + alpha_unch*(reward - Qavoid[unchosen])
+    Qavoid[unchosen] = Qavoid[unchosen] + alpha_ch*(reward - Qavoid[unchosen])
     
   }
 }     

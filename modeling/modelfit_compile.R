@@ -11,3 +11,7 @@ save(my_compiledmodel, file=paste0(data_path,'/modelfit_compile.rdata'))
 
 my_compiledmodel=stan_model(paste0(model_path,'model_loo.stan'))
 save(my_compiledmodel,file=paste0(data_path,'/modelfit_compile_loo.rdata'))
+
+
+my_compiledmodel=stan_model(paste0(model_path,'model_test_set.stan'))
+save(my_compiledmodel,file=paste0(data_path,'/modelfit_compile_test_set.rdata'))

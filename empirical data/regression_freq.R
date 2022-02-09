@@ -9,26 +9,29 @@ library(lme4)
 library(raincloudplots)
 
 rm(list=ls())
-
-#load empirical data
 load('./data/empirical_data/df.rdata')
 df<-na.omit(df)
 
-#load parameters of avoid-approach
-load('./data/model_approach_avoid/modelfit_based_on_empirical_data.rdata')
+#estimating model-independent reward influence on unchosen action----------------------------------------------------------------
 
-
-load('./data/empirical_data/fromIdo/unch_individual_params.rdata')
-load('./data/empirical_data/fromIdo/prolific_subj.rdata')
-reward_oneback_effect_on_unchosen=cbind(vec,vec1)
-reward_oneback_effect_on_unchosen=reward_oneback_effect_on_unchosen[sort(reward_oneback_effect_on_unchosen$subject_id_prolific,index.return=TRUE)$ix,]
-#estimate individual unchosen updating
-model= glmer(stay_frc_unch ~ reward_oneback+(reward_oneback| prolificid), 
+#fit hierarchical regression and save individual estimates
+model= glmer(stay_frc_unch ~ reward_oneback+(reward_oneback| subject), 
              data = df%>%filter(reoffer_ch==F,reoffer_unch==T), 
              family = binomial,
              control = glmerControl(optimizer = "bobyqa"), nAGQ = 1)
 
-hist(coef(model)$subject[,2])
+unchosen_oneback_effect=coef(model)$subject[,2]
+save(unchosen_oneback_effect,file='./data/empirical_data/unchosen_oneback_effect_hierarchical_fit_glmer.rdata')
+
+#plot historgram for individual effects
+source('./functions/my_posteriorplot.R')
+
+my_posteriorplot(x       = unchosen_oneback_effect,
+                 myxlim  = c(-.75,+.25),
+                 my_vline= 0, 
+                 myxlab  = expression(beta['previous-outcome']),
+                 mycolor = "blanchedalmond")+ylab('density')
+
 
 x=df%>%group_by(subject)%>%summarise(mean_acc=mean(acc))
 
@@ -150,4 +153,14 @@ raincloud_2
 
 
 
-
+library(lme4)
+#fit hierarchical regression and save individual estimates
+model= glmer(stay_frc_ch ~ reward_twoback*reward_oneback+(reward_twoback*reward_oneback| subject), 
+             data = df%>%filter(reoffer_ch==T,reoffer_unch==F,lag(choice,1)==lag(unchosen,2)), 
+             family = binomial,
+             control = glmerControl(optimizer = "bobyqa"), nAGQ = 1)
+car::Anova(model)
+plot(effects::effect('reward_twoback:reward_oneback',model,xlevels=2))
+names(df)
+library(dplyr)
+df%>%group_by(subject)%>%filter(reoffer_ch==F,reoffer_unch==T,lag(choice,2)==lag(unchosen,1))%>%summarise(length(choice))

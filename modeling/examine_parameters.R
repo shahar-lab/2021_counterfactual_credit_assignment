@@ -13,16 +13,16 @@ load(paste0(data_path,'/modelfit_based_on_artificial_data.rdata'))
 load(paste0(data_path,'/modelfit_based_on_empirical_data.rdata'))
 
 my_posteriorplot(x       = plogis(pars$population_locations[,3]),
-                     myxlim  = c(0,1),
+                     myxlim  = c(0.5,1),
                      my_vline= -100, 
-                     myxlab  = expression(alpha['location']),
+                     myxlab  = expression(omega['']),
                      mycolor = "pink")
 
 
 my_posteriorplot(x       = pars$population_locations[,2],
-                     myxlim  = c(0.5,5),
+                     myxlim  = c(0.5,4),
                      my_vline= -100, 
-                     myxlab  = expression(beta['location']),
+                     myxlab  = expression(beta['']),
                      mycolor = "pink")
 
 

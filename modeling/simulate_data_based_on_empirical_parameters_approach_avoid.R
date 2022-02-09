@@ -16,18 +16,18 @@ parameters=
 cbind(subject=seq(1,Nsubjects),
            alpha_chosen   =par_alpha,
            beta           =par_beta,
-           alpha_unchosen =par_omega)
+           omega          =par_omega)
 
 
 #set task variables 
-cfg = list(Nblocks         =4,
+cfg = list(Nblocks         =20,
            Ntrials_perblock=50,
            Narms           =4,  #number of arms in the task 
            Nraffle         =2,  #number of arms offered for selection each trial
            rndwlk          =read.csv('./functions/rndwlk.csv',header=F))
 
 #run simulation
-source(paste0(myfolder,'files/model.R'))
+source('./modeling/model_approach_avoid/approach_avoid_model.r')
 
 df=data.frame()
 for (subject in 1:Nsubjects) {
@@ -35,6 +35,6 @@ for (subject in 1:Nsubjects) {
 }
 
 #save
-save(df,file=paste0(myfolder,'data/simulate_data_based_on_empirical_parameters.Rdata'))
+save(df,file='data/model_approach_avoid/simulated_data_based_on_empirical_parameters.Rdata')
 
 

@@ -10,11 +10,7 @@ load(paste0(myfolder,'./data/simulate_data_based_on_artificial_parameters.rdata'
 
 
 
-df=df%>%mutate(delta_exp_value        =abs(expval_ch-expval_unch),
-               deltaQ                 =abs(Qval_ch - Qval_unch),)%>%
-        mutate(delta_exp_value_oneback=lag(delta_exp_value),
-               deltaQ_oneback         =lag(deltaQ),
-               reoffer_ch             =(offer1==lag(choice)|offer2==lag(choice)),
+df=df%>%mutate(reoffer_ch             =(offer1==lag(choice)|offer2==lag(choice)),
                reoffer_unch           =(offer1==lag(unchosen)|offer2==lag(unchosen)),
                stay_frc_ch            =(choice==lag(choice)),
                stay_frc_unch          =(choice==lag(unchosen)),

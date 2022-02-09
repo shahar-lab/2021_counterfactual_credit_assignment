@@ -8,11 +8,12 @@ source('./functions/my_starter.R')
 detectCores()
 
 #load data
-load('./data/empirical_data/standata.rdata')
+#load('./data/empirical_data/standata.rdata')
+load('./data/empirical_data_replication_2_MP/empirical_standata.rdata')
 load(paste0(data_path,'/modelfit_compile_loo.rdata'))
 
 like=
-  lapply(1:4, function(mytestfold) {
+  lapply(1:3, function(mytestfold) {
     print(Sys.time())
     print(mytestfold)
     data_for_stan$testfold=mytestfold
@@ -29,16 +30,16 @@ like=
   })
 
 #aggregate across all four blocks
-like=like[[1]]+like[[2]]+like[[3]]+like[[4]]
+like=like[[1]]+like[[2]]+like[[3]]#+like[[4]]
 
-save(like, file=paste0(data_path,'/modelfit_like_per_trial_and_chain.rdata'))
+save(like, file=paste0(data_path,'/modelfit_like_per_trial_and_chain_replication_2_MP.rdata'))
 
 # save mean predicted probability per trial (across samples)
 like   =t(sapply(1:dim(like)[1], function(i){x=c(t(like[i,,]))
                                              x[x==0]<-NA
                                              x=na.omit(x)}))
 
-save(like, file=paste0(data_path,'/modelfit_like_per_trial.rdata'))
+save(like, file=paste0(data_path,'/modelfit_like_per_trial_replication_2_MP.rdata'))
 
 
 

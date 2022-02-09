@@ -1,7 +1,12 @@
 rm(list=ls())
 library(data.table)
 library(tidyverse)
-df<-data.table(read.csv('empirical data/df.csv'))
+df<-data.table(read.csv('./data/empirical_data/df.csv'))
+
+
+# library(osfr)
+# df=osf_retrieve_file("https://osf.io/fxney/")
+
 
 ###### house keeping ----------------------
 #sort trials
@@ -28,9 +33,14 @@ df=df%>%mutate(delta_exp_value        = (prob1-prob2),
   mutate(delta_exp_value_oneback=lag(delta_exp_value),
                reoffer_ch             =(offer1==lag(choice)|offer2==lag(choice)),
                reoffer_unch           =(offer1==lag(unchosen)|offer2==lag(unchosen)),
+               reoffer_ch_twoback     =(offer1==lag(choice,2)|offer2==lag(choice,2)),
+               reoffer_unch_twoback   =(offer1==lag(unchosen,2)|offer2==lag(unchosen,2)),
                stay_frc_ch            =(choice==lag(choice)),
                stay_frc_unch          =(choice==lag(unchosen)),
+               stay_frc_unch_twoback  =(choice==lag(unchosen,2)),
+               stay_key               =(choice==lag(unchosen)),
                reward_oneback         =lag(reward),
+               reward_twoback         =lag(reward,2),
                acc_oneback            =lag(acc),
                prob1_oneback          =lag(prob1),
                prob2_oneback          =lag(prob2),
@@ -87,4 +97,4 @@ df<-df[rt>200 & rt<4000]
 #remove first trial of every block
 df<-df[trl>1]
 
-save(df, file='data/empirical_data-df.rdata')
+save(df, file='data/empirical_data/df.rdata')

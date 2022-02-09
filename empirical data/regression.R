@@ -23,12 +23,14 @@ model= glmer(stay_frc_unch ~ reward_oneback+(reward_oneback| subject),
 unchosen_oneback_effect=coef(model)$subject[,2]
 save(unchosen_oneback_effect,file='./data/empirical_data/unchosen_oneback_effect_hierarchical_fit_glmer.rdata')
 
+#plot historgram for individual effects
+source('./functions/my_posteriorplot.R')
 
 my_posteriorplot(x       = unchosen_oneback_effect,
-                 myxlim  = c(-.5,+.5),
+                 myxlim  = c(-.75,+.25),
                  my_vline= 0, 
                  myxlab  = expression(beta['previous-outcome']),
-                 mycolor = "dark purple")
+                 mycolor = "blanchedalmond")+ylab('density')
 
 
 x=df%>%group_by(subject)%>%summarise(mean_acc=mean(acc))

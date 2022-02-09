@@ -23,6 +23,8 @@ library(dplyr)
 library(tidyr)
 load('./data/empirical_data/df.rdata')
 df=cbind(df,null=(null),double_updating=(double_updating),approach_avoid=(approach_avoid))
+
+df$
 names(df)
 df%>%mutate(elpd_diff_winning_against_second_best=approach_avoid-double_updating,
             elpd_diff_winning_against_null=approach_avoid-null)%>%
@@ -30,7 +32,7 @@ df%>%mutate(elpd_diff_winning_against_second_best=approach_avoid-double_updating
      summarise(mean(elpd_diff_winning_against_null),
                mean(elpd_diff_winning_against_second_best))
 
-t.test(df$null[df$reoffer_unch],df$approach_avoid[df$reoffer_unch],paired=T)
+t.test(df$null[df$reoffer_unch &df$reoffer_unch_twoback],df$approach_avoid[df$reoffer_unch],paired=T)
 t.test(df$null[!df$reoffer_unch],df$approach_avoid[!df$reoffer_unch],paired=T)
 
 t.test(df$null[df$reoffer_ch&df$reoffer_unch],df$double_updating[df$reoffer_ch&df$reoffer_unch],paired=T)
