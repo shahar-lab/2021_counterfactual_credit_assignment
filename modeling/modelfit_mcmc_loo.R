@@ -13,7 +13,7 @@ load('./data/empirical_data_replication_2_MP/empirical_standata.rdata')
 load(paste0(data_path,'/modelfit_compile_loo.rdata'))
 
 like=
-  lapply(1:3, function(mytestfold) {
+  lapply(1:6, function(mytestfold) {
     print(Sys.time())
     print(mytestfold)
     data_for_stan$testfold=mytestfold
@@ -30,11 +30,12 @@ like=
   })
 
 #aggregate across all four blocks
-like=like[[1]]+like[[2]]+like[[3]]#+like[[4]]
+like=like[[1]]+like[[2]]+like[[3]]+like[[4]]+like[[5]]+like[[6]]
 
 save(like, file=paste0(data_path,'/modelfit_like_per_trial_and_chain_replication_2_MP.rdata'))
 
 # save mean predicted probability per trial (across samples)
+# note2self - I counted that the number of missing data was exactly what line 39 took out as NA so this does not cause any problems
 like   =t(sapply(1:dim(like)[1], function(i){x=c(t(like[i,,]))
                                              x[x==0]<-NA
                                              x=na.omit(x)}))

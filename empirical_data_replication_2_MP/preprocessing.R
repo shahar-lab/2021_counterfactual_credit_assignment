@@ -1,7 +1,8 @@
 rm(list=ls())
 library(data.table)
 library(tidyverse)
-df=read.csv('./empirical_data_replication/teacher_student_sessions1_2.csv')
+library(dplyr)
+df=read.csv('./data/empirical_data_replication_2_MP/teacher_student_sessions1_2.csv')
 
 
 df=df%>%mutate(delta_exp_value        =(prob1-prob2),

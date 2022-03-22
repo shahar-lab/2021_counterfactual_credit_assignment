@@ -7,12 +7,12 @@ rm(list=ls())
 library(loo)
 
 mymodel='null'
-load(paste0('data/model_',mymodel,'/modelfit_like_per_trial.rdata'))
+load(paste0('data/model_',mymodel,'/modelfit_like_per_trial_replication_2_MP.rdata'))
 dim(like)
 null=elpd(like)
 
 mymodel='deliberation'
-load(paste0('data/model_',mymodel,'/modelfit_like_per_trial_replication_2_MP.rdata'))
+load(paste0('data/model_',mymodel,'/modelfit_like_per_trial.rdata'))
 dim(like)
 deliberation=elpd(like)
 
@@ -24,16 +24,18 @@ single_prediction_error=elpd(like)
 
 
 mymodel='double_updating'
-load(paste0('data/model_',mymodel,'/modelfit_like_per_trial.rdata'))
+load(paste0('data/model_',mymodel,'/modelfit_like_per_trial_replication_2_MP.rdata'))
 dim(like)
 double_updating=elpd(like)
 
 
 mymodel='approach_avoid'
-load(paste0('data/model_',mymodel,'/modelfit_like_per_trial.rdata'))
+load(paste0('data/model_',mymodel,'/modelfit_like_per_trial_replication_2_MP.rdata'))
 dim(like)
 approach_avoid=elpd(like)
 
-loo_compare(double_updating,approach_avoid)
+loo_compare(null,double_updating,approach_avoid)
+
+
 loo_compare(null,deliberation,single_prediction_error,double_updating,approach_avoid)
 t.test(null,deliberation)

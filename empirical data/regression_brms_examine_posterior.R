@@ -28,8 +28,9 @@ my_posteriorplot(x       = posterior_samples$b_reward_onebackrewarded,
 
 load('./data/empirical_data/brms_unchosen_weakly_informative_priors.rdata')
 load('./data/empirical_data/brms_unchosen_twoback_weakly_informative_priors.rdata')
+load('./data/empirical_data/brms_unchosen_weakly_informative_priors_delta_abs_exp.rdata')
 
-describe_posterior(model)
+bayestestR::describe_posterior(model)
 
 
 
