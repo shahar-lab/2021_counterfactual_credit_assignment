@@ -3,6 +3,11 @@ library(data.table)
 library(tidyverse)
 df<-data.table(read.csv('./data/empirical_data/df.csv'))
 
+
+# library(osfr)
+# df=osf_retrieve_file("https://osf.io/fxney/")
+
+
 ###### house keeping ----------------------
 #sort trials
 df    =df[order(df$subj,df$blk,df$trl),]
@@ -26,15 +31,20 @@ df=df%>%mutate(delta_exp_value        = (prob1-prob2),
                reward=rw,
                subject=subj)%>%
   mutate(delta_exp_value_oneback=lag(delta_exp_value),
-         reoffer_ch             =(offer1==lag(choice)|offer2==lag(choice)),
-         reoffer_unch           =(offer1==lag(unchosen)|offer2==lag(unchosen)),
-         stay_frc_ch            =(choice==lag(choice)),
-         stay_frc_unch          =(choice==lag(unchosen)),
-         reward_oneback         =lag(reward),
-         acc_oneback            =lag(acc),
-         prob1_oneback          =lag(prob1),
-         prob2_oneback          =lag(prob2),
-         rt_oneback             =lag(rt))
+               reoffer_ch             =(offer1==lag(choice)|offer2==lag(choice)),
+               reoffer_unch           =(offer1==lag(unchosen)|offer2==lag(unchosen)),
+               reoffer_ch_twoback     =(offer1==lag(choice,2)|offer2==lag(choice,2)),
+               reoffer_unch_twoback   =(offer1==lag(unchosen,2)|offer2==lag(unchosen,2)),
+               stay_frc_ch            =(choice==lag(choice)),
+               stay_frc_unch          =(choice==lag(unchosen)),
+               stay_frc_unch_twoback  =(choice==lag(unchosen,2)),
+               stay_key               =(choice==lag(unchosen)),
+               reward_oneback         =lag(reward),
+               reward_twoback         =lag(reward,2),
+               acc_oneback            =lag(acc),
+               prob1_oneback          =lag(prob1),
+               prob2_oneback          =lag(prob2),
+               rt_oneback             =lag(rt))
 
 #replace -1 rt with values
 df$rt[df$rt==-1]<-NA
@@ -86,4 +96,5 @@ df<-df[rt>200 & rt<4000]
 
 #remove first trial of every block
 df<-df[trl>1]
+
 save(df, file='data/empirical_data/df.rdata')

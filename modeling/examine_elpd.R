@@ -12,7 +12,7 @@ dim(like)
 null=elpd(like)
 
 mymodel='deliberation'
-load(paste0('data/model_',mymodel,'/modelfit_like_per_trial_replication_2_MP.rdata'))
+load(paste0('data/model_',mymodel,'/modelfit_like_per_trial.rdata'))
 dim(like)
 deliberation=elpd(like)
 

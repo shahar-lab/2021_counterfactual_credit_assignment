@@ -3,10 +3,12 @@ rm(list=ls())
 
 
 #--------------------------------------------------------------------------------------------------------
+mymodel   =read.table('./modeling/working_model.txt')
+data_path =paste0('./data/model_',mymodel)
+model_path=paste0('./modeling/model_',mymodel,'/',mymodel,'_')
 
-
-load(paste0(myfolder,'./data/simdata_based_on_empirical_parameters.rdara'))
-load(paste0(myfolder,'./data/simulate_data_based_on_artificial_parameters.rdata'))
+load(paste0(data_path,'./data/simdata_based_on_empirical_parameters.rdata'))
+load(paste0(data_path,'/simulate_data_based_on_artificial_parameters.Rdata'))
 
 
 
@@ -27,7 +29,7 @@ model= glmer(stay_frc_ch ~ reward_oneback+(reward_oneback| subject),
 model= glmer(stay_frc_unch ~ reward_oneback+(reward_oneback| subject), 
              data = df%>%filter(reoffer_ch==F,reoffer_unch==T), 
              family = binomial,
-             control = glmerControl(optimizer = "bobyqa"), nAGQ = 0)
+             control = glmerControl(optimizer = "bobyqa"), nAGQ = 1)
 
 model= glmer(stay_frc_ch ~ reward_oneback+(reward_oneback| subject), 
              data = df%>%filter(reoffer_ch==T,reoffer_unch==T), 
@@ -35,9 +37,5 @@ model= glmer(stay_frc_ch ~ reward_oneback+(reward_oneback| subject),
              control = glmerControl(optimizer = "bobyqa"), nAGQ = 0)
 
 library(effects)
-plot(effect('reward_oneback',model))
-library(car)
-Anova(model)
-library(lme4)
-model= lmer(Qval_unch ~ expval_unch+(expval_unch| subject), 
-             data = df)
+plot(effect('reward_oneback',model),ylim=c(-0.4,0))
+#note ido ran the brms on his computer

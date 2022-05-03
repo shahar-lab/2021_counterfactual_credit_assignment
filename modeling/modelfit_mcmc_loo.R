@@ -8,7 +8,7 @@ source('./functions/my_starter.R')
 detectCores()
 
 #load data
-#load('./data/empirical_data/standata.rdata')
+load('./data/empirical_data/standata.rdata')
 load('./data/empirical_data_replication_2_MP/empirical_standata.rdata')
 load(paste0(data_path,'/modelfit_compile_loo.rdata'))
 
