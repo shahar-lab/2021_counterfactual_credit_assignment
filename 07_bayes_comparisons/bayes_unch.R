@@ -169,7 +169,6 @@ save(describe_posterior_rw_unch_cars, file = 'data/bayes_data/describe_posterior
 y=as.numeric(tab_unch$stay_frc_unch)
 yrep=posterior_predict(bayes_rw_unch_medium_prior_sampling)
 group_vec=tab_unch$rw_oneback==1
-png(file="graphics/prior_predictive_unch.png")
 ppc_stat_grouped(y, yrep, group_vec)
 
 dev.off()
@@ -177,6 +176,6 @@ dev.off()
 y=as.numeric(tab_unch$stay_frc_unch)
 yrep=posterior_predict(bayes_rw_unch_medium)
 group_vec=tab_unch$rw_oneback==1
-png(file="graphics/posterior_predictive_unch.png")
+#png(file="graphics/posterior_predictive_unch.png")
 ppc_stat_grouped(y, yrep, group_vec)
 dev.off()

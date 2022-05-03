@@ -13,11 +13,14 @@ library(bayestestR)
 library(bayesplot)
 library(parallel)
 library(data.table)
+library(cmdstanr)
 
-
+load('data/analysis_data/tab.Rdata')
 load('data/analysis_data/tab_unch.Rdata')
 load('data/analysis_data/tab_unch_two.Rdata')
 load('data/analysis_data/cars_unch.Rdata')
+tab = tab%>%mutate(rt_oneback=lag(rt))
+tab_unch = tab%>%filter(reoffer_ch==F,reoffer_unch==T)
 
 num_cores=detectCores()
 
@@ -137,6 +140,29 @@ prior_rw_cond_weak = c(
     prior = "normal(0,0.4)",
     class = "b",
     coef = "rw_oneback:cond"
+  )
+)
+
+prior_rw_rt_oneback = c(
+  set_prior(
+    prior = "normal(0,0.4)",
+    class = "b",
+    coef = "Intercept"
+  ),
+  set_prior(
+    prior = "normal(0,0.4)",
+    class = "b",
+    coef = "rw_oneback1"
+  ),
+  set_prior(
+    prior = "normal(0,0.4)",
+    class = "b",
+    coef = "rt_oneback"
+  ),
+  set_prior(
+    prior = "normal(0,0.4)",
+    class = "b",
+    coef = "rw_oneback1:rt_oneback"
   )
 )
 
@@ -415,3 +441,53 @@ bayes_rw_cars_unch_medium <-
   )
 
 save(bayes_rw_cars_unch_medium, file = 'data/brms_data/model_rw_cars_unch_medium.Rdata')
+
+#rt one back
+bayes_rw_rt_oneback_unch <-
+  brm(
+    formula = stay_frc_unch ~ 0+Intercept+rw_oneback*rt_oneback + (1+rw_oneback*rt_oneback|prolific_id),
+    data = tab_unch,
+    family = bernoulli(link = "logit"),
+    warmup = 1000,
+    iter = 4000,
+    chains = 4,
+    cores = 4,
+    seed = 123,
+    prior = prior_rw_rt_oneback,
+    backend = "cmdstanr"
+  )
+save(bayes_rw_rt_oneback_unch, file = 'data/brms_data/bayes_rw_rt_oneback_unch')
+
+# model1_not_showing_effect -----------------------------------------------
+prior_rw_model1 = c(
+  set_prior(
+    prior = "normal(0,0.2)",
+    class = "b",
+    coef = "Intercept"
+  ),
+  set_prior(
+    prior = "normal(0,0.2)",
+    class = "b",
+    coef = "reward_oneback1"
+  ))
+df=df%>%mutate(reoffer_ch             =(offer1==lag(choice)|offer2==lag(choice)),
+               reoffer_unch           =(offer1==lag(unchosen)|offer2==lag(unchosen)),
+               stay_frc_ch            =(choice==lag(choice)),
+               stay_frc_unch          =(choice==lag(unchosen)),
+               reward_oneback         =as.factor(lag(reward)))%>%na.omit()
+df_unch=df%>%filter(reoffer_ch==0,reoffer_unch==1)
+bayes_rw_model1_unch <-
+  brm(
+    formula = stay_frc_unch ~ 0+Intercept+reward_oneback + (1+reward_oneback|subject),
+    data = df_unch,
+    family = bernoulli(link = "logit"),
+    warmup = 1000,
+    iter = 2000,
+    chains = 4,
+    cores = 4,
+    seed = 123,
+    prior = prior_rw_model1,
+    backend = "cmdstanr"
+  )
+
+save(bayes_rw_model1_unch, file = 'data/brms_data/bayes_rw_model1_unch')
