@@ -1,7 +1,7 @@
 rm(list=ls())
 library(data.table)
 library(tidyverse)
-df<-data.table(read.csv('./data/empirical_data/df.csv'))
+df<-data.table(read.csv('./data/empirical_data/df_raw.csv'))
 
 ###### house keeping ----------------------
 #sort trials
@@ -86,4 +86,20 @@ df<-df[rt>200 & rt<4000]
 
 #remove first trial of every block
 df<-df[trl>1]
+
+#####factors and scaling --------------------------------
+
+df=
+df |> 
+  mutate ( subject             = factor(subject),
+           condition           = factor(cond, levels = c(0,1),labels = c('loss','win')),
+           reward_oneback      = factor(reward_oneback, levels = c(0,1), labels = c('unrewarded','rewarded')),
+           delta_exp_value_oneback_abs = abs(delta_exp_value_oneback),
+           trial_scaled        = trl/10
+  )
+           
+contrasts(df$condition)
+contrasts(df$reward_oneback)
+
+
 save(df, file='data/empirical_data/df.rdata')

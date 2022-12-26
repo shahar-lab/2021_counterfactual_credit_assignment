@@ -11,16 +11,22 @@ load(paste0('data/model_',mymodel,'/modelfit_like_per_trial.rdata'))
 dim(like)
 null=elpd(like)
 
-mymodel='deliberation'
-load(paste0('data/model_',mymodel,'/modelfit_like_per_trial.rdata'))
-dim(like)
-deliberation=elpd(like)
+# mymodel='deliberation'
+# load(paste0('data/model_',mymodel,'/modelfit_like_per_trial.rdata'))
+# dim(like)
+# deliberation=elpd(like)
 
 
-mymodel='single_prediction_error'
+# mymodel='single_prediction_error' 
+# load(paste0('data/model_',mymodel,'/modelfit_like_per_trial_IBA_truncated.rdata'))
+# dim(like)
+# single_prediction_error=elpd(like)
+
+mymodel='single_prediction_error_tranc' 
 load(paste0('data/model_',mymodel,'/modelfit_like_per_trial.rdata'))
 dim(like)
-single_prediction_error=elpd(like)
+single_prediction_error_tranc=elpd(like)
+
 
 
 mymodel='double_updating'
@@ -34,6 +40,6 @@ load(paste0('data/model_',mymodel,'/modelfit_like_per_trial.rdata'))
 dim(like)
 approach_avoid=elpd(like)
 
-loo_compare(double_updating,approach_avoid)
-loo_compare(null,deliberation,single_prediction_error,double_updating,approach_avoid)
-t.test(null,deliberation)
+
+loo_compare(null,single_prediction_error_tranc,double_updating,approach_avoid)
+

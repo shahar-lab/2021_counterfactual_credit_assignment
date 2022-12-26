@@ -9,38 +9,55 @@ detectCores()
 
 #load data
 load('./data/empirical_data/standata.rdata')
-load('./data/empirical_data_replication_2_MP/empirical_standata.rdata')
+#load('./data/empirical_data_replication_2_MP/empirical_standata.rdata')
 load(paste0(data_path,'/modelfit_compile_loo.rdata'))
+# 
+# like=
+#   lapply(1:4, function(mytestfold) {
+#     print(Sys.time())
+#     print(mytestfold)
+#     data_for_stan$testfold=mytestfold
+#     
+#     fit<- sampling(my_compiledmodel, 
+#                    data=data_for_stan, 
+#                    pars=c('log_lik'),
+#                    iter=2000,
+#                    warmup = 1000,
+#                    chains=4,
+#                    cores =4) 
+#     pars=rstan::extract(fit)
+#     pars$log_lik
+#   })
 
+data_for_stan$trial=c()
 like=
-  lapply(1:6, function(mytestfold) {
+  lapply(1:4, function(mytestfold) {
     print(Sys.time())
     print(mytestfold)
     data_for_stan$testfold=mytestfold
-    
-    fit<- sampling(my_compiledmodel, 
-                   data=data_for_stan, 
-                   pars=c('log_lik'),
-                   iter=2000,
-                   warmup = 1000,
+
+    fit<- my_compiledmodel$sample(
+                   data=data_for_stan,
+                   save_warmup = FALSE,
+                   iter_sampling =1000,
+                   iter_warmup  = 1000,
                    chains=4,
-                   cores =4) 
-    pars=rstan::extract(fit)
-    pars$log_lik
+                   parallel_chains =2)
+    draws <- fit$draws("log_lik",format = "matrix")
   })
 
 #aggregate across all four blocks
-like=like[[1]]+like[[2]]+like[[3]]+like[[4]]+like[[5]]+like[[6]]
+like=like[[1]]+like[[2]]+like[[3]]+like[[4]]
 
-save(like, file=paste0(data_path,'/modelfit_like_per_trial_and_chain_replication_2_MP.rdata'))
+save(like, file=paste0(data_path,'/modelfit_like_per_trial_and_chain.rdata'))
 
 # save mean predicted probability per trial (across samples)
 # note2self - I counted that the number of missing data was exactly what line 39 took out as NA so this does not cause any problems
-like   =t(sapply(1:dim(like)[1], function(i){x=c(t(like[i,,]))
+like   =t(sapply(1:dim(like)[1], function(i){x=c(t(like[i,]))
                                              x[x==0]<-NA
                                              x=na.omit(x)}))
 
-save(like, file=paste0(data_path,'/modelfit_like_per_trial_replication_2_MP.rdata'))
+save(like, file=paste0(data_path,'/modelfit_like_per_trial.rdata'))
 
 
 

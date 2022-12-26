@@ -8,7 +8,7 @@ library(lme4)
 library(raincloudplots)
 
 rm(list=ls())
-load('./data/empirical_data_replication_2_MP/df.rdata')
+df=read.csv('./data/empirical_data_replication_2_MP/df.csv')
 
 
 
@@ -136,24 +136,6 @@ raincloud_2
 
 
 
-
-
-
-
-model= glmer(stay_frc_ch ~ reward_oneback*delta_exp_value_oneback+(reward_oneback*delta_exp_value_oneback| subject), 
-             data = df%>%filter(reoffer_ch==T,reoffer_unch==F), 
-             family = binomial,
-             control = glmerControl(optimizer = "bobyqa"), nAGQ = 0)
-
-model= glmer(stay_frc_unch ~ reward_oneback*delta_exp_value_oneback+(reward_oneback*delta_exp_value_oneback| subject), 
-             data = df%>%filter(reoffer_ch==F,reoffer_unch==T), 
-             family = binomial,
-             control = glmerControl(optimizer = "bobyqa"), nAGQ = 0)
-
-library(effects)
-plot(effect('reward_oneback:delta_exp_value_oneback',model,xlevels=3))
-library(car)
-Anova(model)
 library(lme4)
 model= lmer(Qval_unch ~ expval_unch+(expval_unch| subject), 
             data = df)

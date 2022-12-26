@@ -5,13 +5,19 @@ source('./functions/my_starter.R')
 #--------------------------------------------------------------------------------------------------------
 
 # compile stan model----------------------------------------------
+library(cmdstanr)
+set_cmdstan_path(path = NULL)
 
 my_compiledmodel=stan_model(paste0(model_path,'model.stan'))
 save(my_compiledmodel, file=paste0(data_path,'/modelfit_compile.rdata'))
 
 my_compiledmodel=stan_model(paste0(model_path,'model_loo.stan'))
+my_compiledmodel=cmdstan_model(paste0(model_path,'model_loo.stan'))
 save(my_compiledmodel,file=paste0(data_path,'/modelfit_compile_loo.rdata'))
 
 
 my_compiledmodel=stan_model(paste0(model_path,'model_test_set.stan'))
 save(my_compiledmodel,file=paste0(data_path,'/modelfit_compile_test_set.rdata'))
+
+
+
